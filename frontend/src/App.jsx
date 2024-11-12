@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // Pages
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+import MapWithAddress from './components/map';
 
 function App() {
 
@@ -16,7 +17,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+      <MapWithAddress address="7 bis rue du Progrès, Montreuil, France" />
+      </BrowserRouter>
   )
 }
 
