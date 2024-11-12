@@ -17,7 +17,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <MapWithAddress address="7 bis rue du Progrès, Montreuil, France" />
       </BrowserRouter>
   )
 }
