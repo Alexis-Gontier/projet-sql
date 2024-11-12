@@ -6,6 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "backend": "cd backend && npm start",
     "frontend": "cd frontend && npm run dev",
+    "install-all": "npm install --prefix backend && npm install --prefix frontend",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "keywords": [],
