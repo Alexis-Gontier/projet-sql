@@ -18,4 +18,4 @@ npm run dev
 cd backend
 npm start
 ```
-`http://localhost:3000/` (pas encore fait)
+`http://localhost:3000/`
