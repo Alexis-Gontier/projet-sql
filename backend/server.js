@@ -11,7 +11,7 @@ const db = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "event"
+    database: "events"
 })
 
 db.connect((err) => {
@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/data", (req, res) => {
-    const sql = "SELECT * FROM data"
+    const sql = "SELECT * FROM event"
     db.query(sql, (err, result) => {
         if (err) {
             return res.status(500).json({
