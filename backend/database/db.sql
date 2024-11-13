@@ -1,6 +1,6 @@
 -- Création de la db
-CREATE DATABASE annuaire;
-USE annuaire;
+CREATE DATABASE events;
+USE envents;
 
 -- Table Category
 CREATE TABLE Category (
