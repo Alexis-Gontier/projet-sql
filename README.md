@@ -39,14 +39,14 @@ Une fois tous les services démarrés :
 - La base de données MySQL sera disponible sur le port 3306.
 
 ---
-
+- **build:**
   ```sh
   docker compose up --build
   ```
 
   Démarre les conteneurs définis dans le fichier _docker-compose.yml_ et force la reconstruction des images Docker. Idéal pour actualiser les images après des modifications de code ou de configuration.
 
-- **make start:**
+- **start:**
 
   ```sh
   docker compose up -d
@@ -54,7 +54,7 @@ Une fois tous les services démarrés :
 
   Démarre les conteneurs en mode détaché (en arrière-plan). Cela permet de les exécuter sans bloquer le terminal.
 
-- **make stop:**
+- **stop:**
 
   ```sh
   docker compose down
