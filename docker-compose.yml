@@ -1,0 +1,51 @@
+version: "3.8"
+
+name: "Bucket"
+
+services:
+  db:
+    platform: linux/amd64
+    image: mysql:8
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s  # Délai d'initialisation de MySQL
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD_ROOT}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile  # Utilisation du Dockerfile du backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: ${DATABASE_USER}
+      DB_PASSWORD: ${DATABASE_PASSWORD}
+      DB_NAME: ${DATABASE_NAME}
+    volumes:
+      - ./backend:/app  # Monte le dossier backend pour le développement en direct
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile  # Utilisation du Dockerfile du frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
