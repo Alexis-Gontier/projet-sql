@@ -1,44 +1,21 @@
+// Imports
 import express from "express"
 import cors from "cors"
-import mysql from "mysql"
+
+// Routes des routes
+import userRoutes from './routes/routes.js'
 
 const app = express()
-const PORT = 3000
-app.use(cors());
+const PORT = process.env.PORT | 3000
+
+// Middleware global
+app.use(cors())
 app.use(express.json())
 
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "events"
-})
+// Utilisation des routes
+app.use('/api/v1', userRoutes);
 
-db.connect((err) => {
-    if (err) {
-        console.log("Erreur de connexion à la BDD:\n", err)
-    } else {
-        console.log("Connecté !")
-    }
-})
-
-app.get("/", (req, res) => {
-    res.send("Hello world")
-})
-
-app.get("/api/v1/data", (req, res) => {
-    const sql = "SELECT * FROM event"
-    db.query(sql, (err, result) => {
-        if (err) {
-            return res.status(500).json({
-                "status": 500,
-                "message": "Internal Server Error"
-              })
-        }
-        return res.json(result)
-    })
-})
-
+// Démarrage du serveur
 app.listen(PORT, () => {
     console.log(`Serveur up sur: http://localhost:${PORT}`)
 })

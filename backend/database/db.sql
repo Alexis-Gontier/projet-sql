@@ -1,6 +1,6 @@
 -- Création de la db
 CREATE DATABASE events;
-USE envents;
+USE events;
 
 -- Table Category
 CREATE TABLE Category (
