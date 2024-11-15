@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
     res.send("Hello world")
 })
 
-app.get("/data", (req, res) => {
+app.get("/api/v1/data", (req, res) => {
     const sql = "SELECT * FROM event"
     db.query(sql, (err, result) => {
         if (err) {
