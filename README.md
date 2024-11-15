@@ -2,20 +2,17 @@
 
 ## Pour lancer le projet **front** et **back** en meme temps
 ```bash
-cd projet-sql
 npm run dev
 ```
 
 ### Pour lancer le projet **front**
 ```bash
-cd frontend
-npm run dev
+npm run frontend
 ```
 `http://localhost:5173/`
 
 ### Pour lancer le projet **back**
 ```bash
-cd backend
-npm start
+npm run backend
 ```
 `http://localhost:3000/`
