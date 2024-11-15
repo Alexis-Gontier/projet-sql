@@ -13,19 +13,14 @@ router.get('/spectacles', (req, res) => {
   db.query(sql, (err, results) => {
     if (err) {
       console.error("Erreur lors de la récupération des spectacles :", err);
-      return res.status(500).send("Erreur de base de données");
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la récupération des spectacles",
+        error: err.message,
+        code: err.code
+      });
     }
-
     res.json(results);
   });
 });
-
-// app.get('/', (req, res) => {
-//   const sql = "SELECT * FROM student"
-//   db.query(sql, (err, result) => {
-//       if (err) return res.json({Message: "Error inside server"})
-//       return res.json(result)
-//   })
-// })
 
 export default router
