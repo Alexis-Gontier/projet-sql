@@ -540,4 +540,56 @@ router.put('/increase-spectacle-price/:date', (req, res) => {
   });
 });
 
+// DELETE
+// ========================================================================
+
+// 1. Supprimer une réservation connaissant le spectateur et le spectacle
+router.delete('/delete-reservation', (req, res) => {
+  const { user_id, spectacle_id } = req.body;
+  const sql = `
+    DELETE FROM Schedule
+    WHERE user_id = ? AND id IN (
+      SELECT id
+      FROM Representation
+      WHERE spectacle_id = ?
+    );
+  `;
+
+  db.query(sql, [user_id, spectacle_id], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la suppression de la réservation :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la suppression",
+        error: err.message
+      });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Aucune réservation trouvée pour ces critères" });
+    }
+    res.json({ message: "Réservation supprimée avec succès" });
+  });
+});
+
+// 2. Annuler un spectacle
+router.delete('/cancel-spectacle/:spectacle_id', (req, res) => {
+  const spectacleId = req.params.spectacle_id;
+  const sql = `
+    DELETE FROM Spectacle WHERE id = ?;
+  `;
+
+  db.query(sql, [spectacleId], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de l'annulation du spectacle :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de l'annulation",
+        error: err.message
+      });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Spectacle non trouvé" });
+    }
+    res.json({ message: "Spectacle annulé avec succès" });
+  });
+});
+
 export default router
