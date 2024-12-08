@@ -396,5 +396,148 @@ router.get('/artistes-preferes', (req, res) => {
   });
 });
 
+// POST
+// ========================================================================
+
+// 1. Créer un utilisateur (s'inscrire)
+router.post('/create-user', (req, res) => {
+  const { username, password, email } = req.body;
+  const sql = `
+    INSERT INTO User (username, password, email) VALUES (?, ?, ?);
+  `;
+
+  db.query(sql, [username, password, email], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de l'inscription :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de l'inscription",
+        error: err.message
+      });
+    }
+    res.status(201).json({ message: "Utilisateur créé avec succès", userId: results.insertId });
+  });
+});
+
+// 2. Associer un artiste à un spectacle
+router.post('/associate-artist-spectacle', (req, res) => {
+  const { artist_id, spectacle_id } = req.body;
+  const sql = `
+    INSERT INTO Role (artist_id, spectacle_id) VALUES (?, ?);
+  `;
+
+  db.query(sql, [artist_id, spectacle_id], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de l'association de l'artiste :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de l'association",
+        error: err.message
+      });
+    }
+    res.status(201).json({ message: "Artiste associé avec succès", roleId: results.insertId });
+  });
+});
+
+// 3. Créer un spectacle
+router.post('/create-spectacle', (req, res) => {
+  const { title, description, category_id } = req.body;
+  const sql = `
+    INSERT INTO Spectacle (title, description, category_id) VALUES (?, ?, ?);
+  `;
+
+  db.query(sql, [title, description, category_id], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la création du spectacle :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la création",
+        error: err.message
+      });
+    }
+    res.status(201).json({ message: "Spectacle créé avec succès", spectacleId: results.insertId });
+  });
+});
+
+// 4. Effectuer une réservation pour un spectacle donné
+router.post('/reserve-seat', (req, res) => {
+  const { schedule_id, user_id, booked } = req.body;
+  const sql = `
+    INSERT INTO Schedule (schedule_id, user_id, booked) VALUES (?, ?, ?);
+  `;
+
+  db.query(sql, [schedule_id, user_id, booked], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la réservation :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la réservation",
+        error: err.message
+      });
+    }
+    res.status(201).json({ message: "Réservation effectuée avec succès", reservationId: results.insertId });
+  });
+});
+
+
+// PUT
+// ========================================================================
+
+// 1. Modifier le mot de passe d'un utilisateur
+router.put('/update-password/:user_id', (req, res) => {
+  const userId = req.params.user_id;
+  const { new_password } = req.body;
+  const sql = `
+    UPDATE User SET password = ? WHERE id = ?;
+  `;
+
+  db.query(sql, [new_password, userId], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la mise à jour du mot de passe :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la mise à jour",
+        error: err.message
+      });
+    }
+    res.json({ message: "Mot de passe mis à jour avec succès" });
+  });
+});
+
+// 2. Ajouter une place à une réservation si le paiement n'a pas encore été effectué et modifier le montant à payer
+router.put('/add-reservation/:schedule_id', (req, res) => {
+  const scheduleId = req.params.schedule_id;
+  const { additional_booked, new_total_amount } = req.body;
+  const sql = `
+    UPDATE Schedule SET booked = booked + ?, amount = ? WHERE id = ? AND paid = 0;
+  `;
+
+  db.query(sql, [additional_booked, new_total_amount, scheduleId], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de l'ajout de la place à la réservation :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de l'ajout",
+        error: err.message
+      });
+    }
+    res.json({ message: "Réservation mise à jour avec succès" });
+  });
+});
+
+// 3. Pour tous les spectacles ayant lieu un jour donné, augmenter le prix de 10% (les réservations déjà payées ne sont pas concernées)
+router.put('/increase-spectacle-price/:date', (req, res) => {
+  const date = req.params.date;
+  const sql = `
+    UPDATE Schedule
+    SET amount = amount * 1.10
+    WHERE date = ? AND paid = 0;
+  `;
+
+  db.query(sql, [date], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de l'augmentation du prix :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de l'augmentation",
+        error: err.message
+      });
+    }
+    res.json({ message: "Prix des spectacles mis à jour avec succès" });
+  });
+});
 
 export default router
