@@ -9,117 +9,11 @@ router.get('/', (req, res) => {
 
 // 1. Afficher la liste des lieux de spectacle
 router.get('/theatres', (req, res) => {
-  const sql = `
-  SELECT DISTINCT Theatre.name AS Theatre_Name, Theatre.address, Theatre.borough
-  FROM Theatre
-   `;
+  const sql = `SELECT id, name, address, borough FROM Theatre;`;
 
   db.query(sql, (err, results) => {
     if (err) {
-      console.error("Erreur lors de la récupération des théâtres :", err);
-      return res.status(500).json({
-        message: "Erreur de serveur lors de la récupération des théâtres",
-        error: err.message
-      });
-    }
-    res.json(results);
-  });
-});
-
-// 2. Afficher les spectacles par arrondissement (marche pas)
-router.get('/spectacles-by-borough', (req, res) => {
-  const sql = `
-    SELECT Spectacle.title AS Spectacle_Title, Theatre.borough
-    FROM Spectacle
-    JOIN Representation ON Spectacle.id = Representation.spectacle_id
-    JOIN Room ON Representation.room_id = Room.id
-    JOIN Theatre ON Room.theatre_id = Theatre.id
-    ORDER BY Theatre.borough
-  `;
-
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Erreur lors de la récupération des spectacles par arrondissement :", err);
-      return res.status(500).json({
-        message: "Erreur de serveur lors de la récupération des spectacles",
-        error: err.message
-      });
-    }
-    res.json(results);
-  });
-});
-
-// 3. Afficher les salles par arrondissement (marche pas)
-router.get('/rooms-by-borough', (req, res) => {
-  const sql = `
-    SELECT Room.name AS Room_Name, Theatre.borough
-    FROM Room
-    JOIN Theatre ON Room.theatre_id = Theatre.id
-    ORDER BY Theatre.borough
-  `;
-
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Erreur lors de la récupération des salles par arrondissement :", err);
-      return res.status(500).json({
-        message: "Erreur de serveur lors de la récupération des salles",
-        error: err.message
-      });
-    }
-    res.json(results);
-  });
-});
-
-// 4. Afficher les spectacles en cours pour une catégorie donnée (marche pas)
-router.get('/current-spectacles/:category', (req, res) => {
-  const { category } = req.params;
-  const sql = `
-    SELECT Spectacle.title AS Spectacle_Title
-    FROM Spectacle
-    JOIN Category ON Spectacle.category_id = Category.id
-    WHERE Category.name = ?
-  `;
-
-  db.query(sql, [category], (err, results) => {
-    if (err) {
-      console.error("Erreur lors de la récupération des spectacles en cours :", err);
-      return res.status(500).json({
-        message: "Erreur de serveur lors de la récupération des spectacles",
-        error: err.message
-      });
-    }
-    res.json(results);
-  });
-});
-
-// 5. Afficher le nombre de spectacles par catégorie
-router.get('/spectacle-count-by-category', (req, res) => {
-  const sql = `
-    SELECT Category.name AS Category_Name, COUNT(Spectacle.id) AS Spectacle_Count
-    FROM Category
-    LEFT JOIN Spectacle ON Spectacle.language = Category.name
-    GROUP BY Category.name
-  `;
-
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Erreur lors de la récupération des spectacles par catégorie :", err);
-      return res.status(500).json({
-        message: "Erreur de serveur lors de la récupération des spectacles",
-        error: err.message
-      });
-    }
-    res.json(results);
-  });
-});
-
-// 6. Afficher le nombre moyen de places réservées par les personnes inscrites
-router.get('/average-seats-booked', (req, res) => {
-  const sql = `SELECT AVG(Schedule.booked) AS Average_Seats_Booked FROM Schedule`;
-
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Erreur lors de la récupération de la moyenne des places réservées :", err);
+      console.error("Erreur lors de la récupération des lieux :", err);
       return res.status(500).json({
         message: "Erreur de serveur lors de la récupération des données",
         error: err.message
@@ -129,20 +23,23 @@ router.get('/average-seats-booked', (req, res) => {
   });
 });
 
-// 7. Afficher la distribution statistique des réservations
-router.get('/seats-distribution', (req, res) => {
+// 2. Afficher les spectacles par arrondissement
+router.get('/spectacles/:borough', (req, res) => {
+  const borough = req.params.borough;
   const sql = `
-    SELECT Schedule.booked AS Seats_Booked, COUNT(*) AS People_Count
-    FROM Schedule
-    GROUP BY Schedule.booked
-    ORDER BY Schedule.booked
+    SELECT Spectacle.title, Theatre.borough 
+    FROM Spectacle
+    JOIN Representation ON Spectacle.id = Representation.spectacle_id
+    JOIN Room ON Representation.room_id = Room.id
+    JOIN Theatre ON Room.theatre_id = Theatre.id
+    WHERE Theatre.borough = ?;
   `;
 
-  db.query(sql, (err, results) => {
+  db.query(sql, [borough], (err, results) => {
     if (err) {
-      console.error("Erreur lors de la récupération des statistiques de réservation :", err);
+      console.error("Erreur lors de la récupération des spectacles :", err);
       return res.status(500).json({
-        message: "Erreur de serveur lors de la récupération des statistiques",
+        message: "Erreur de serveur lors de la récupération des données",
         error: err.message
       });
     }
@@ -150,18 +47,121 @@ router.get('/seats-distribution', (req, res) => {
   });
 });
 
-// 8. Afficher le taux de remplissage des salles par spectacle (marche pas)
-router.get('/fill-rate', (req, res) => {
+// 3. Afficher les salles par arrondissement (borough)
+router.get('/salles/:borough', (req, res) => {
+  const borough = req.params.borough;
   const sql = `
-    SELECT Spectacle.title AS Spectacle_Title,
-           Room.name AS Room_Name,
-           (SUM(Schedule.booked) / Room.gauge) * 100 AS Fill_Rate
+    SELECT Room.name AS room_name, Theatre.name AS theatre_name 
+    FROM Room
+    JOIN Theatre ON Room.theatre_id = Theatre.id
+    WHERE Theatre.borough = ?;
+  `;
+
+  db.query(sql, [borough], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des salles :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la récupération des données",
+        error: err.message
+      });
+    }
+    res.json(results);
+  });
+});
+
+// 4. Afficher les spectacles en cours pour une catégorie donnée
+router.get('/spectacles-en-cours/:category', (req, res) => {
+  const category = req.params.category;
+  const sql = `
+    SELECT Spectacle.title, Category.name AS category_name, Representation.first_date, Representation.last_date
+    FROM Spectacle
+    JOIN Representation ON Spectacle.id = Representation.spectacle_id
+    JOIN Category ON Spectacle.id = Category.id
+    WHERE NOW() BETWEEN Representation.first_date AND Representation.last_date
+    AND Category.name = ?;
+  `;
+
+  db.query(sql, [category], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des spectacles :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la récupération des données",
+        error: err.message
+      });
+    }
+    res.json(results);
+  });
+});
+
+// 5. Afficher le nombre de spectacles par catégorie
+router.get('/nombre-spectacles', (req, res) => {
+  const sql = `
+    SELECT Category.name AS category_name, COUNT(Spectacle.id) AS spectacle_count
+    FROM Category
+    JOIN Spectacle ON Spectacle.id = Category.id
+    GROUP BY Category.name;
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des spectacles par catégorie :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la récupération des données",
+        error: err.message
+      });
+    }
+    res.json(results);
+  });
+});
+
+// 6. Afficher le nombre moyen de places réservées
+router.get('/moyenne-places-reservees', (req, res) => {
+  const sql = `SELECT AVG(booked) AS avg_places_reserved FROM Schedule;`;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des données :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la récupération des données",
+        error: err.message
+      });
+    }
+    res.json(results);
+  });
+});
+
+// 7. Afficher la distribution statistique des réservations de places
+router.get('/distribution-reservations', (req, res) => {
+  const sql = `
+    SELECT booked, COUNT(*) AS total_people
     FROM Schedule
-    JOIN Representation ON Schedule.id = Representation.id
+    GROUP BY booked
+    ORDER BY booked ASC;
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des réservations :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la récupération des données",
+        error: err.message
+      });
+    }
+    res.json(results);
+  });
+});
+
+// 8. Afficher le taux de remplissage des salles par spectacle
+router.get('/taux-remplissage', (req, res) => {
+  const sql = `
+    SELECT Spectacle.title, Room.name AS room_name, 
+    (SUM(Schedule.booked) / Room.gauge) * 100 AS fill_rate
+    FROM Schedule
+    JOIN Representation ON Schedule.date = Representation.first_date
     JOIN Spectacle ON Representation.spectacle_id = Spectacle.id
     JOIN Room ON Representation.room_id = Room.id
-    GROUP BY Spectacle.id, Room.id
-    ORDER BY Fill_Rate DESC
+    GROUP BY Spectacle.title, Room.name
+    ORDER BY fill_rate DESC;
   `;
 
   db.query(sql, (err, results) => {
@@ -176,24 +176,23 @@ router.get('/fill-rate', (req, res) => {
   });
 });
 
-// 9. Artistes ayant participé avec un autre artiste à au moins deux spectacles (? pas test)
-router.get('/co-artists/:firstName/:lastName', (req, res) => {
-  const { firstName, lastName } = req.params;
+// 9. Faire la liste des artistes qui ont participé avec un artiste donné à au moins deux spectacles différents
+router.get('/artistes-communs/:artist_id', (req, res) => {
+  const artistId = req.params.artist_id;
   const sql = `
-    SELECT DISTINCT a1.firstName, a1.lastName
-    FROM Artist a1
-    JOIN Role r1 ON a1.id = r1.artist_id
-    JOIN Spectacle s1 ON r1.spectacle_id = s1.id
-    JOIN Role r2 ON s1.id = r2.spectacle_id AND r1.artist_id != r2.artist_id
+    SELECT DISTINCT a1.firstName AS artist_1, a2.firstName AS artist_2
+    FROM Role r1
+    JOIN Role r2 ON r1.spectacle_id = r2.spectacle_id AND r1.artist_id <> r2.artist_id
+    JOIN Artist a1 ON r1.artist_id = a1.id
     JOIN Artist a2 ON r2.artist_id = a2.id
-    WHERE a2.firstName = ? AND a2.lastName = ?
-    GROUP BY a1.id
-    HAVING COUNT(DISTINCT s1.id) >= 2
+    WHERE r1.artist_id = ?
+    GROUP BY a1.firstName, a2.firstName
+    HAVING COUNT(DISTINCT r1.spectacle_id) >= 2;
   `;
 
-  db.query(sql, [firstName, lastName], (err, results) => {
+  db.query(sql, [artistId], (err, results) => {
     if (err) {
-      console.error("Erreur lors de la récupération des co-artistes :", err);
+      console.error("Erreur lors de la récupération des artistes :", err);
       return res.status(500).json({
         message: "Erreur de serveur lors de la récupération des données",
         error: err.message
@@ -203,21 +202,21 @@ router.get('/co-artists/:firstName/:lastName', (req, res) => {
   });
 });
 
-// 10. Liste des metteurs en scène dans un théâtre donné (? pas test)
-router.get('/directors/:theatreName', (req, res) => {
-  const { theatreName } = req.params;
+// 10. Afficher les liste de tous les metteurs en scène qui sont travaillé dans un théâtre donné
+router.get('/metteurs-en-scene/:theatre_id', (req, res) => {
+  const theatreId = req.params.theatre_id;
   const sql = `
     SELECT DISTINCT Artist.firstName, Artist.lastName
-    FROM Artist
-    JOIN Role ON Artist.id = Role.artist_id
+    FROM Role
     JOIN Spectacle ON Role.spectacle_id = Spectacle.id
     JOIN Representation ON Spectacle.id = Representation.spectacle_id
     JOIN Room ON Representation.room_id = Room.id
     JOIN Theatre ON Room.theatre_id = Theatre.id
-    WHERE Theatre.name = ? AND Role.role_name = 'Metteur en scène'
+    JOIN Artist ON Role.artist_id = Artist.id
+    WHERE Theatre.id = ?;
   `;
 
-  db.query(sql, [theatreName], (err, results) => {
+  db.query(sql, [theatreId], (err, results) => {
     if (err) {
       console.error("Erreur lors de la récupération des metteurs en scène :", err);
       return res.status(500).json({
@@ -229,22 +228,22 @@ router.get('/directors/:theatreName', (req, res) => {
   });
 });
 
-// 11. Trois catégories de spectacles avec le plus de places réservées (marche pas)
-router.get('/top-categories', (req, res) => {
+// 11. Afficher les trois catégories de spectacles pour lesquelles le plus de places ont été réservées
+router.get('/categories-places-reservees', (req, res) => {
   const sql = `
-    SELECT Category.name AS Category_Name, SUM(Schedule.booked) AS Total_Booked
-    FROM Category
-    JOIN Spectacle ON Spectacle.category_id = Category.id
-    JOIN Representation ON Spectacle.id = Representation.spectacle_id
-    JOIN Schedule ON Representation.id = Schedule.id
+    SELECT Category.name AS category_name, SUM(Schedule.booked) AS total_reserved
+    FROM Schedule
+    JOIN Representation ON Schedule.date = Representation.first_date
+    JOIN Spectacle ON Representation.spectacle_id = Spectacle.id
+    JOIN Category ON Spectacle.id = Category.id
     GROUP BY Category.name
-    ORDER BY Total_Booked DESC
-    LIMIT 3
+    ORDER BY total_reserved DESC
+    LIMIT 3;
   `;
 
   db.query(sql, (err, results) => {
     if (err) {
-      console.error("Erreur lors de la récupération des catégories les plus réservées :", err);
+      console.error("Erreur lors de la récupération des catégories :", err);
       return res.status(500).json({
         message: "Erreur de serveur lors de la récupération des données",
         error: err.message
@@ -254,32 +253,25 @@ router.get('/top-categories', (req, res) => {
   });
 });
 
-// 12. Recommander des spectacles à un utilisateur basé sur des goûts similaires (pas test)
-router.get('/recommendations/:username', (req, res) => {
-  const { username } = req.params;
+// 12. Recommandation : proposer à un personne X des spectacles qu'elle pourrait aimer
+router.get('/recommandation/:schedule_id', (req, res) => {
+  const scheduleId = req.params.schedule_id;
   const sql = `
-    WITH Spectacles_Vus AS (
-        SELECT DISTINCT Schedule.id
-        FROM Schedule
-        JOIN Subscriber ON Schedule.id = Subscriber.id
-        WHERE Subscriber.username = ?
-    ),
-    Recommendations AS (
-        SELECT DISTINCT s2.id AS Recommended_Spectacle
-        FROM Schedule s1
-        JOIN Schedule s2 ON s1.id != s2.id
-        WHERE s1.id IN (SELECT id FROM Spectacles_Vus)
-    )
-    SELECT DISTINCT Spectacle.title
-    FROM Spectacle
-    WHERE Spectacle.id IN (SELECT Recommended_Spectacle FROM Recommendations)
+    SELECT DISTINCT s2.title
+    FROM Schedule sch1
+    JOIN Schedule sch2 ON sch1.date = sch2.date AND sch1.id <> sch2.id
+    JOIN Representation r1 ON sch1.date = r1.first_date
+    JOIN Representation r2 ON sch2.date = r2.first_date
+    JOIN Spectacle s1 ON r1.spectacle_id = s1.id
+    JOIN Spectacle s2 ON r2.spectacle_id = s2.id
+    WHERE sch1.id = ?;
   `;
 
-  db.query(sql, [username], (err, results) => {
+  db.query(sql, [scheduleId], (err, results) => {
     if (err) {
-      console.error("Erreur lors de la génération des recommandations :", err);
+      console.error("Erreur lors de la récupération des recommandations :", err);
       return res.status(500).json({
-        message: "Erreur de serveur lors de la génération des recommandations",
+        message: "Erreur de serveur lors de la récupération des données",
         error: err.message
       });
     }
@@ -287,16 +279,16 @@ router.get('/recommendations/:username', (req, res) => {
   });
 });
 
-// 13. Afficher la liste des théâtres triée par la note moyenne obtenue (marche pas)
-router.get('/theatres-by-rating', (req, res) => {
+// 13. Afficher la liste des théâtres, triée par la note moyenne obtenue par les spectacles qui s'y sont joués
+router.get('/theatres-notes', (req, res) => {
   const sql = `
-    SELECT Theatre.name AS Theatre_Name, AVG(Schedule.notation) AS Average_Rating
+    SELECT Theatre.name, AVG(Spectacle.rating) AS avg_rating
     FROM Theatre
     JOIN Room ON Theatre.id = Room.theatre_id
     JOIN Representation ON Room.id = Representation.room_id
-    JOIN Schedule ON Representation.id = Schedule.id
+    JOIN Spectacle ON Representation.spectacle_id = Spectacle.id
     GROUP BY Theatre.name
-    ORDER BY Average_Rating DESC
+    ORDER BY avg_rating DESC;
   `;
 
   db.query(sql, (err, results) => {
@@ -311,19 +303,19 @@ router.get('/theatres-by-rating', (req, res) => {
   });
 });
 
-// 14. Existe-t-il des artistes ayant tenu au moins trois fonctions différentes ? (marche pas)
-router.get('/multi-role-artists', (req, res) => {
+// 14. Existe-t-il des artistes ayant tenu au moins trois fonctions différentes ?
+router.get('/artistes-fonctions', (req, res) => {
   const sql = `
     SELECT Artist.firstName, Artist.lastName
-    FROM Artist
-    JOIN Role ON Artist.id = Role.artist_id
+    FROM Role
+    JOIN Artist ON Role.artist_id = Artist.id
     GROUP BY Artist.id
-    HAVING COUNT(DISTINCT Role.role_name) >= 3
+    HAVING COUNT(DISTINCT Role.type) >= 3;
   `;
 
   db.query(sql, (err, results) => {
     if (err) {
-      console.error("Erreur lors de la récupération des artistes multi-fonctions :", err);
+      console.error("Erreur lors de la récupération des artistes :", err);
       return res.status(500).json({
         message: "Erreur de serveur lors de la récupération des données",
         error: err.message
@@ -333,7 +325,7 @@ router.get('/multi-role-artists', (req, res) => {
   });
 });
 
-// 15. Afficher les recettes par spectacle, triées par ordre décroissant (marche pas)
+// 15. Afficher la liste des recettes par spectacle et par ordre décroissant
 router.get('/revenues-by-spectacle', (req, res) => {
   const sql = `
     SELECT Spectacle.title AS Spectacle_Title, SUM(Schedule.amount) AS Total_Revenue
@@ -341,7 +333,7 @@ router.get('/revenues-by-spectacle', (req, res) => {
     JOIN Representation ON Spectacle.id = Representation.spectacle_id
     JOIN Schedule ON Representation.id = Schedule.id
     GROUP BY Spectacle.title
-    ORDER BY Total_Revenue DESC
+    ORDER BY Total_Revenue DESC;
   `;
 
   db.query(sql, (err, results) => {
@@ -356,17 +348,16 @@ router.get('/revenues-by-spectacle', (req, res) => {
   });
 });
 
-// 16. Y a-t-il des spectacles complets parmi ceux qui ne se jouent plus ? (marche pas)
-router.get('/sold-out-ended-spectacles', (req, res) => {
+// 16. Y a-t-il des spectacles qui ont affiché complet parmi ceux qui ne se jouent plus ?
+router.get('/spectacles-complet', (req, res) => {
   const sql = `
-    SELECT Spectacle.title AS Spectacle_Title
-    FROM Spectacle
-    JOIN Representation ON Spectacle.id = Representation.spectacle_id
-    JOIN Schedule ON Representation.id = Schedule.id
+    SELECT Spectacle.title, Theatre.name AS theatre_name
+    FROM Schedule
+    JOIN Representation ON Schedule.date = Representation.first_date
+    JOIN Spectacle ON Representation.spectacle_id = Spectacle.id
     JOIN Room ON Representation.room_id = Room.id
-    WHERE Representation.end_date < CURRENT_DATE
-    GROUP BY Spectacle.id, Room.id
-    HAVING SUM(Schedule.booked) >= Room.gauge
+    JOIN Theatre ON Room.theatre_id = Theatre.id
+    WHERE Schedule.booked >= Room.gauge AND Schedule.end_date < NOW();
   `;
 
   db.query(sql, (err, results) => {
@@ -381,17 +372,16 @@ router.get('/sold-out-ended-spectacles', (req, res) => {
   });
 });
 
-// 17. Artistes préférés des spectateurs (spectacles les mieux notés) (marche pas)
-router.get('/favorite-artists', (req, res) => {
+// 17. Quels sont les artistes préférés des spectateurs ?
+router.get('/artistes-preferes', (req, res) => {
   const sql = `
-    SELECT Artist.firstName, Artist.lastName, AVG(Schedule.notation) AS Average_Rating
-    FROM Artist
-    JOIN Role ON Artist.id = Role.artist_id
+    SELECT Artist.firstName, Artist.lastName, AVG(Spectacle.rating) AS avg_rating
+    FROM Role
     JOIN Spectacle ON Role.spectacle_id = Spectacle.id
-    JOIN Representation ON Spectacle.id = Representation.spectacle_id
-    JOIN Schedule ON Representation.id = Schedule.id
+    JOIN Rating ON Spectacle.id = Rating.spectacle_id
+    JOIN Artist ON Role.artist_id = Artist.id
     GROUP BY Artist.id
-    ORDER BY Average_Rating DESC
+    ORDER BY avg_rating DESC;
   `;
 
   db.query(sql, (err, results) => {

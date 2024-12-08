@@ -6,7 +6,7 @@ const db = mysql.createConnection({
     port: 3306,
     user: "root",
     password: "",
-    database: "events"
+    database: "theatredb"
 });
 
 // Connexion à la base de données
