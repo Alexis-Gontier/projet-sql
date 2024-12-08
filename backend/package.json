@@ -1,22 +1,13 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "main": "server.js",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.21.1",
-    "mysql": "^2.18.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.7"
-  }
+    "name": "backend",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node src/app.js"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "mysql2": "^3.11.5"
+    }
 }
