@@ -40,8 +40,6 @@ L'arborescence du projet est la suivante :
 
 Voici un exemple de fichier README.md pour ton projet, qui couvre l'installation, l'utilisation, et les détails techniques de l'architecture.
 
-markdown
-Copier le code
 # Projet FullStack (Frontend, Backend, Nginx, MySQL)
 
 Ce projet est une application fullstack qui utilise **React.js** pour le frontend, **Node.js avec Express.js** pour le backend, et **MySQL** comme base de données. L'ensemble de l'application est conteneurisé avec **Docker** pour faciliter la gestion des différents services.
