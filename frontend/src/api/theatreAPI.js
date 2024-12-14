@@ -11,3 +11,13 @@ export const fetchTheatres = async () => {
     throw error;
   }
 };
+
+export const fetchSpectaclesByBorough = async (borough) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/spectacles/${borough}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching spectacles:', error);
+    throw error;
+  }
+};

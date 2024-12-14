@@ -10,7 +10,7 @@ export default function MainLayout() {
         <main className="max-w-6xl mx-auto pt-14">
             <Outlet />
         </main>
-        <Footer />
+        {/* <Footer /> */}
     </>
   )
 }
