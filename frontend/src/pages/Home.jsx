@@ -1,24 +1,20 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { useTheatres } from '../hooks/useTheatres';
 
 export default function Home() {
-  const [data, setData] = useState([])
-
-  useEffect(() => {
-    axios.get('http://localhost:3000/api/v1/theatres')
-      .then(res => setData(res.data))
-      .catch(err => console.log(err))
-  }, [])
+  const { data, error, loading } = useTheatres();
 
   return (
-    <ul>
-      {data.map(theatres => (
-        <li key={theatres.id} className="p-5 m-5 border-2 max-w-sm">
-          <p className="text-xl">{theatres.name}</p>
-          <p>{theatres.presentation}</p>
-          <p>Adresse: {theatres.address}</p>
-        </li>
-      ))}
-    </ul>
+    <div>
+      {loading && <p>Chargement des données...</p>}
+      {error ? (
+        <p className="text-red-500">Erreur : {error}</p>
+      ) : (
+        <ul>
+          {data.map((theatre,) => (
+            <li key={theatre.id}>{theatre.name}</li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
