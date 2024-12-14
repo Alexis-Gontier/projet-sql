@@ -1,6 +1,6 @@
 export default function AuthInput({ type = "text", placeholder, label, id }) {
     return (
-      <div className="mb-4">
+      <div className="w-full">
         {/* Label */}
         {label && (
           <label

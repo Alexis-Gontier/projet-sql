@@ -2,11 +2,11 @@ import AuthInput from '../components/auth/AuthInput';
 
 export default function LoginForm() {
   return (
-    <form className="w-1/2 mx-auto">
-      <h2 className="text-2xl font-semibold text-[#162D3A] mb-8">
+    <form className="flex flex-col gap-5 w-1/2 mx-auto">
+      <h2 className="text-2xl font-semibold text-[#162D3A]">
         Welcome Back  👋  <br /> Login to your account
       </h2>
-      <p className="text-[#162D3A] text-sm mb-8">
+      <p className="text-[#162D3A] text-sm">
         Today is a new day. It's your day. You shape it.<br />
         Sign in to start managing your projects.
       </p>

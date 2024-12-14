@@ -1,36 +1,40 @@
-import React from 'react'
+import AuthInput from '../components/auth/AuthInput';
 
 export default function Register() {
   return (
-    <form action="">
-      <h2 className="text-2xl font-semibold text-[#162D3A] mb-8">
+    <form action="" className="flex flex-col gap-5 w-1/2 mx-auto">
+      <h2 className="text-2xl font-semibold text-[#162D3A">
         Welcome  👋  <br /> Create an account
       </h2>
-      <p className="text-[#162D3A] text-sm mb-8">
+      <p className="text-[#162D3A] text-sm">
         Today is a new day. It's your day. You shape it.<br />
         Sign up to start managing your projects.
       </p>
       <div className="flex gap-4">
-        <input
+        <AuthInput
+          id="firstName"
           type="text"
           placeholder="First Name"
-          className="w-1/2 h-12 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring focus:ring-[#162D3A]"
+          label="First Name"
         />
-        <input
+        <AuthInput
+          id="lastName"
           type="text"
           placeholder="Last Name"
-          className="w-1/2 h-12 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring focus:ring-[#162D3A]"
+          label="Last Name"
         />
       </div>
-      <input
+      <AuthInput
+        id="email"
         type="email"
-        placeholder="Email"
-        className="w-full h-12 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring focus:ring-[#162D3A] mt-4"
+        placeholder="Example@email.com"
+        label="Email"
       />
-      <input
+      <AuthInput
+        id="password"
         type="password"
-        placeholder="Password"
-        className="w-full h-12 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring focus:ring-[#162D3A] mt-4"
+        placeholder="At least 8 characters"
+        label="Password"
       />
       <button
         type="submit"
