@@ -1,7 +1,8 @@
 import { useTheatres } from '../hooks/useTheatres';
+import { fetchTheatres } from '../api/theatreAPI';
 
 export default function Home() {
-  const { data, error, loading } = useTheatres();
+  const { data, error, loading } = useTheatres(fetchTheatres);
 
   return (
     <div>
@@ -10,7 +11,7 @@ export default function Home() {
         <p className="text-red-500">Erreur : {error}</p>
       ) : (
         <ul>
-          {data.map((theatre,) => (
+          {data.map((theatre) => (
             <li key={theatre.id}>{theatre.name}</li>
           ))}
         </ul>

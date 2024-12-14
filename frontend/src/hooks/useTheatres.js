@@ -1,25 +1,26 @@
 import { useState, useEffect } from 'react';
-import { fetchTheatres } from '../api/theatreAPI';
 
-export const useTheatres = () => {
+export function useTheatres(fetchAPI) {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getTheatres = async () => {
-      try {
-        const theatres = await fetchTheatres();
+  function getTheatres() {
+    fetchAPI()
+      .then((theatres) => {
         setData(theatres);
-      } catch (err) {
+      })
+      .catch((err) => {
         setError(err.message);
-      } finally {
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    };
+      });
+  }
 
+  useEffect(function () {
     getTheatres();
-  }, []);
+  }, [fetchAPI]);
 
   return { data, error, loading };
-};
+}
