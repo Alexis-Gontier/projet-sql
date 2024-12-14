@@ -15,6 +15,11 @@ app.use(express.json())
 // Utilisation des routes
 app.use('/api/v1', userRoutes);
 
+// Route par défaut
+app.get('/', (req, res) => {
+    res.send('API is running :)')
+})
+
 // Démarrage du serveur
 app.listen(PORT, () => {
     console.log(`Serveur up sur: http://localhost:${PORT}`)
