@@ -8,7 +8,8 @@ import AuthLayout from './layouts/AuthLayout';
 // Pages
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
-import Borough from './pages/Borough';
+import SpectacleBorough from './pages/SpectacleBorough';
+import SalleBorough from './pages/SalleBorough';
 import MapWithAddress from './components/map';
 
 import Login from './pages/Login';
@@ -22,7 +23,8 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/spectacle/:borough" element={<Borough />} />
+          <Route path="/spectacles/:borough" element={<SpectacleBorough />} />
+          <Route path="/salles/:borough" element={<SalleBorough />} />
           <Route path="/map" element={<MapWithAddress />} />
           <Route path="*" element={<NotFound />} />
         </Route>

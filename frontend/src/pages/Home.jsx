@@ -11,15 +11,19 @@ export default function Home() {
       {error ? (
         <p className="text-red-500">Erreur : {error}</p>
       ) : (
-        <div className="grid grid-cols-4 gap-4">
+        <>
           {data.map((theatre) => (
-          <ul key={theatre.id} className="border border-gray-600 p-4">
+          <ul key={theatre.id} className="border border-gray-600 p-4 flex flex-col gap-2 my-4">
             <li>Nom: {theatre.name}</li>
             <li>Addresse: {theatre.address}</li>
-            <li><Link to={`/spectacle/${theatre.borough}`} className="underline">Arrondissement: {theatre.borough}</Link></li>
+            <li className="flex gap-2">
+              <p>Arrondissement: {theatre.borough}</p>
+              <Link to={`/spectacles/${theatre.borough}`} className="underline">spectacles</Link>
+              <Link to={`/salles/${theatre.borough}`} className="underline">salles</Link>
+            </li>
           </ul>
           ))}
-        </div>
+        </>
       )}
     </div>
   );
