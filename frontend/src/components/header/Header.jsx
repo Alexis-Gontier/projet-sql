@@ -18,12 +18,12 @@ export default function Header() {
           <Link to={"/"}>OpenIA</Link>
         </nav>
 
-        <nav className="flex gap-4 group">
+        <nav className="group">
           {LINKS.map((link, index) => (
             <Link
               key={index}
               to={link.url}
-              className="text-black transition-all duration-300 group-hover:text-gray-400 hover:!text-black"
+              className="p-3 transition-all duration-300 group-hover:text-gray-400 hover:!text-black"
             >
               {link.text}
             </Link>
@@ -31,8 +31,11 @@ export default function Header() {
         </nav>
 
         <nav>
-          <Link to="/search">
-            <IoIosSearch className="text-2xl" />
+          <Link
+            to="/search"
+            className=""
+          >
+            <IoIosSearch className="text-2xl transition-transform duration-300 hover:rotate-[75deg]" />
           </Link>
         </nav>
 
