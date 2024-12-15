@@ -597,4 +597,70 @@ router.delete('/cancel-spectacle/:spectacle_id', (req, res) => {
   });
 });
 
+//BONUS 
+//INSERT
+
+// 3. Créer un spectacle avec représentations associées
+router.post('/create-spectacle-representations', (req, res) => {
+  const { title, synopsis, duration, price, language, category_id, representations } = req.body;
+
+  // Validation simple des données
+  if (!title || !representations || !Array.isArray(representations)) {
+    return res.status(400).json({ message: "Données invalides pour le spectacle et représentations" });
+  }
+
+  // Commencer la transaction
+  db.beginTransaction((err) => {
+    if (err) {
+      console.error("Erreur lors du début de la transaction :", err);
+      return res.status(500).json({ message: "Erreur serveur" });
+    }
+
+    // Étape 1 : Insérer le spectacle
+    const sqlSpectacle = `
+      INSERT INTO Spectacle (title, synopsis, duration, price, language, category_id)
+      VALUES (?, ?, ?, ?, ?, ?);
+    `;
+    db.query(sqlSpectacle, [title, synopsis, duration, price, language, category_id], (err, result) => {
+      if (err) {
+        console.error("Erreur lors de l'insertion du spectacle :", err);
+        return db.rollback(() => res.status(500).json({ message: "Erreur lors de l'insertion du spectacle" }));
+      }
+
+      const spectacleId = result.insertId;
+
+      // Étape 2 : Insérer les représentations associées
+      const sqlRepresentation = `
+        INSERT INTO Representation (first_date, last_date, spectacle_id, room_id)
+        VALUES (?, ?, ?, ?);
+      `;
+
+      const representationPromises = representations.map((rep) => {
+        return new Promise((resolve, reject) => {
+          db.query(sqlRepresentation, [rep.first_date, rep.last_date, spectacleId, rep.room_id], (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
+        });
+      });
+
+      // Exécuter toutes les insertions de représentations
+      Promise.all(representationPromises)
+        .then(() => {
+          db.commit((err) => {
+            if (err) {
+              console.error("Erreur lors du commit :", err);
+              return db.rollback(() => res.status(500).json({ message: "Erreur lors de la validation de la transaction" }));
+            }
+            res.status(201).json({ message: "Spectacle et représentations créés avec succès", spectacleId });
+          });
+        })
+        .catch((err) => {
+          console.error("Erreur lors de l'insertion des représentations :", err);
+          db.rollback(() => res.status(500).json({ message: "Erreur lors de l'insertion des représentations" }));
+        });
+    });
+  });
+});
+
 export default router
