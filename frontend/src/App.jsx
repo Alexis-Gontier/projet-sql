@@ -9,6 +9,7 @@ import AuthLayout from './layouts/AuthLayout';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import SpectacleBorough from './pages/SpectacleBorough';
+import SpectaclesByCategory from './pages/SpectaclesByCategory';
 import SalleBorough from './pages/SalleBorough';
 import MapWithAddress from './components/map';
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/spectacles/:borough" element={<SpectacleBorough />} />
           <Route path="/salles/:borough" element={<SalleBorough />} />
+          <Route path="/spectacles-en-cours/:category" element={<SpectaclesByCategory />} />
           <Route path="/map" element={<MapWithAddress />} />
           <Route path="*" element={<NotFound />} />
         </Route>

@@ -31,3 +31,13 @@ export const fetchSallesByBorough = async (borough) => {
     throw error;
   }
 };
+
+export const fetchSpectaclesByCategory = async (category) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/spectacles-en-cours/${category}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching spectacles:', error);
+    throw error;
+  }
+};

@@ -72,23 +72,28 @@ router.get('/salles/:borough', (req, res) => {
 // 4. Afficher les spectacles en cours pour une catégorie donnée
 router.get('/spectacles-en-cours/:category', (req, res) => {
   const category = req.params.category;
+
+  // Requête SQL pour récupérer les spectacles en cours pour la catégorie spécifiée
   const sql = `
     SELECT Spectacle.title, Category.name AS category_name, Representation.first_date, Representation.last_date
     FROM Spectacle
     JOIN Representation ON Spectacle.id = Representation.spectacle_id
-    JOIN Category ON Spectacle.id = Category.id
+    JOIN Category ON Spectacle.category_id = Category.id
     WHERE NOW() BETWEEN Representation.first_date AND Representation.last_date
     AND Category.name = ?;
   `;
 
+  // Exécution de la requête avec la catégorie donnée en paramètre
   db.query(sql, [category], (err, results) => {
     if (err) {
-      console.error("Erreur lors de la récupération des spectacles :", err);
+      console.error('Erreur lors de la récupération des spectacles:', err);
       return res.status(500).json({
-        message: "Erreur de serveur lors de la récupération des données",
-        error: err.message
+        message: 'Erreur serveur lors de la récupération des spectacles',
+        error: err.message,
       });
     }
+
+    // Réponse avec les résultats sous forme de JSON
     res.json(results);
   });
 });
