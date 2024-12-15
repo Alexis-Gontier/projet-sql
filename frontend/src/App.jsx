@@ -12,6 +12,7 @@ import SpectacleBorough from './pages/SpectacleBorough';
 import SpectaclesByCategory from './pages/SpectaclesByCategory';
 import SalleBorough from './pages/SalleBorough';
 import MapWithAddress from './components/map';
+import SpectacleDetail from './pages/Spectacle';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/spectacle/:id" element={<SpectacleDetail/>} />
           <Route path="/spectacles/:borough" element={<SpectacleBorough />} />
           <Route path="/salles/:borough" element={<SalleBorough />} />
           <Route path="/spectacles-en-cours/:category" element={<SpectaclesByCategory />} />
