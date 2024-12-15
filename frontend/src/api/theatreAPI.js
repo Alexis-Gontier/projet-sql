@@ -54,3 +54,15 @@ export const fetchSpectacleCounts = async () => {
     throw error;
   }
 };
+
+//6 
+
+export const fetchSpectacleDetails = async (id) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/spectacle/${id}`);
+    return response.data;  
+  } catch (err) {
+    console.error('Error fetching spectacle details:', err);
+    throw err;
+  }
+};

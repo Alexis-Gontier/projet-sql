@@ -23,6 +23,46 @@ router.get('/theatres', (req, res) => {
   });
 });
 
+// Récupérer les detail d'un spectacle
+router.get('/spectacle/:id', (req, res) => {
+  const spectacleId = req.params.id;
+  const sql = `
+    SELECT 
+      Spectacle.title AS spectacle_title, 
+      Spectacle.synopsis, 
+      Spectacle.duration, 
+      Spectacle.price, 
+      Spectacle.language, 
+      Category.name AS category_name,
+      GROUP_CONCAT(DISTINCT CONCAT(Artist.firstName, ' ', Artist.lastName, ' (', Role.role, ')')) AS cast_details
+    FROM 
+      Spectacle
+    LEFT JOIN 
+      Category ON Spectacle.category_id = Category.id
+    LEFT JOIN 
+      Role ON Role.spectacle_id = Spectacle.id
+    LEFT JOIN 
+      Artist ON Role.artist_id = Artist.id
+    WHERE 
+      Spectacle.id = ?
+    GROUP BY 
+      Spectacle.id;
+  `;
+
+  db.query(sql, [spectacleId], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des détails du spectacle :", err);
+      return res.status(500).json({
+        message: "Erreur de serveur lors de la récupération des données",
+        error: err.message
+      });
+    }
+    res.json(results);
+  });
+});
+
+
+
 // 2. Afficher les spectacles par arrondissement
 router.get('/spectacles/:borough', (req, res) => {
   const borough = req.params.borough;
@@ -51,7 +91,7 @@ router.get('/spectacles/:borough', (req, res) => {
 router.get('/salles/:borough', (req, res) => {
   const borough = req.params.borough;
   const sql = `
-    SELECT Room.name AS room_name, Theatre.name AS theatre_name 
+    SELECT theatre.id, Room.name AS room_name, Theatre.name AS theatre_name 
     FROM Room
     JOIN Theatre ON Room.theatre_id = Theatre.id
     WHERE Theatre.borough = ?;
