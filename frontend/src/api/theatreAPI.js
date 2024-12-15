@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000/api/v1';
 
+// 1
 export const fetchTheatres = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/theatres`);
@@ -11,7 +12,7 @@ export const fetchTheatres = async () => {
     throw error;
   }
 };
-
+// 2
 export const fetchSpectaclesByBorough = async (borough) => {
   try {
     const response = await axios.get(`${BASE_URL}/spectacles/${borough}`);
@@ -21,7 +22,7 @@ export const fetchSpectaclesByBorough = async (borough) => {
     throw error;
   }
 };
-
+// 3
 export const fetchSallesByBorough = async (borough) => {
   try {
     const response = await axios.get(`${BASE_URL}/salles/${borough}`);
@@ -32,9 +33,21 @@ export const fetchSallesByBorough = async (borough) => {
   }
 };
 
+// 4
 export const fetchSpectaclesByCategory = async (category) => {
   try {
     const response = await axios.get(`${BASE_URL}/spectacles-en-cours/${category}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching spectacles:', error);
+    throw error;
+  }
+};
+
+// 5
+export const fetchSpectacleCounts = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/nb-spectacles`);
     return response.data;
   } catch (error) {
     console.error('Error fetching spectacles:', error);

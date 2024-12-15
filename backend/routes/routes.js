@@ -99,11 +99,11 @@ router.get('/spectacles-en-cours/:category', (req, res) => {
 });
 
 // 5. Afficher le nombre de spectacles par catégorie
-router.get('/nombre-spectacles', (req, res) => {
+router.get('/nb-spectacles', (req, res) => {
   const sql = `
     SELECT Category.name AS category_name, COUNT(Spectacle.id) AS spectacle_count
     FROM Category
-    JOIN Spectacle ON Spectacle.id = Category.id
+    LEFT JOIN Spectacle ON Spectacle.category_id = Category.id
     GROUP BY Category.name;
   `;
 
