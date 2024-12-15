@@ -99,3 +99,5 @@ JOIN Representation r2 ON sch2.date = r2.first_date
 JOIN Spectacle s1 ON r1.spectacle_id = s1.id
 JOIN Spectacle s2 ON r2.spectacle_id = s2.id
 ... (50lignes restantes)
+
+
