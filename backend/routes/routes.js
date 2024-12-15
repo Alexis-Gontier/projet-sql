@@ -703,4 +703,93 @@ router.post('/create-spectacle-representations', (req, res) => {
   });
 });
 
+//BONUS 
+//DELETE
+//Requete marche, la seul erreur c'est que il faut une clé etrangére 
+//dans la table Shedule pour que la requete fonctionne.
+
+
+
+
+router.put('/set-on-delete-cascade', (req, res) => {
+  const sqlDropConstraint = `
+    ALTER TABLE Schedule DROP FOREIGN KEY fk_subscriber;
+  `;
+  const sqlAddCascade = `
+    ALTER TABLE Schedule
+    ADD CONSTRAINT fk_subscriber
+    FOREIGN KEY (subscriber_id) REFERENCES Subscriber(id)
+    ON DELETE CASCADE;
+  `;
+
+  // Étape 1 : Supprimer l'ancienne contrainte
+  db.query(sqlDropConstraint, (err) => {
+    if (err) {
+      console.error("Erreur lors de la suppression de la contrainte existante :", err);
+      return res.status(500).json({ message: "Erreur lors de la suppression de la contrainte existante", error: err.message });
+    }
+
+    // Étape 2 : Ajouter la contrainte avec ON DELETE CASCADE
+    db.query(sqlAddCascade, (err) => {
+      if (err) {
+        console.error("Erreur lors de l'ajout de ON DELETE CASCADE :", err);
+        return res.status(500).json({ message: "Erreur lors de l'ajout de la contrainte", error: err.message });
+      }
+
+      res.status(200).json({ message: "ON DELETE CASCADE configuré avec succès" });
+    });
+  });
+});
+
+
+//BONUS 
+//UPDATE
+// elle marche 
+
+//exemple pour la test sur potsman
+// {
+//   "reactionType": "likes",
+//   "action": "remove"
+// }
+
+//tu choisis la reactions que tu veux incrémenter ou pas dans "reactionType"
+//et avec action tu add = +1 , remove = -1
+
+
+
+// Route pour ajouter ou retirer une réaction au commentaire d'un utilisateur
+router.put('/add-reaction/:id', (req, res) => {
+  const { id } = req.params; // ID de la ligne Schedule
+  const { reactionType, action } = req.body; // Type de réaction et action (add/remove)
+
+  // Détermine si on incrémente ou décrémente
+  const incrementValue = action === 'remove' ? -1 : 1;
+
+  // Requête SQL pour mettre à jour le JSON et convertir en entier
+  const sql = `
+    UPDATE Schedule
+    SET reactions = JSON_SET(reactions, ?, 
+      GREATEST(CAST(JSON_EXTRACT(reactions, ?) AS UNSIGNED) + ?, 0))
+    WHERE id = ?;
+  `;
+
+  const jsonPath = `$.${reactionType}`; // Chemin JSON pour accéder à la clé
+
+  // Exécution de la requête
+  db.query(sql, [jsonPath, jsonPath, incrementValue, id], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de la mise à jour des réactions :", err);
+      return res.status(500).json({
+        message: "Erreur lors de la mise à jour des réactions",
+        error: err.message,
+      });
+    }
+
+    res.status(200).json({ message: "Réaction mise à jour avec succès", affectedRows: result.affectedRows });
+  });
+});
+
+
+
+
 export default router
