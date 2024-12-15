@@ -168,3 +168,21 @@ INSERT INTO Schedule (date, booked, paid, amount, comment, notation, reactions) 
 ('2024-12-12 18:00:00', 20, TRUE, 400.00, 'Un peu long.', 3, '{"likes": 5, "dislikes": 3, "surprised": 1, "hugs": 0}'),
 ('2024-12-13 16:30:00', 15, FALSE, 0.00, 'Annulé.', 0, '{"likes": 0, "dislikes": 5, "surprised": 0, "hugs": 0}'),
 ('2024-12-14 20:00:00', 45, TRUE, 1350.00, 'Une expérience unique.', 5, '{"likes": 15, "dislikes": 0, "surprised": 3, "hugs": 8}');
+
+-- UPDATE pour teste la requete bonus "Trouver les trois théâtres les plus proches du point de géolocalisation"
+UPDATE theatre
+SET geolocation = POINT(2.3335, 48.8789) -- longitude, latitude
+WHERE id = 1;
+
+UPDATE theatre
+SET geolocation = POINT(2.3709, 48.8575) -- longitude, latitude
+WHERE id = 2;
+
+
+
+-- UPDATE pour teste la requete bonus "Trouver les trois théâtres les plus proches du point de géolocalisation"
+-- Trouver dans les synopsis des spectacles ceux qui correspondent le mieux à une sélection de mots.
+-- Indice : Il faut d'abord créer un index FULLTEXT sur la colonne synopsis avant
+-- d'utiliser la clause MATCH
+ALTER TABLE spectacle ADD FULLTEXT(synopsis);
+

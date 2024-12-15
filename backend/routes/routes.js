@@ -790,6 +790,107 @@ router.put('/add-reaction/:id', (req, res) => {
 });
 
 
+//BONUS 
+//SELECT
+// elle marche 
+// sur postman : http://localhost:3000/api/v1/theatres-proches?latitude=48.3&longitude=2.21
 
+// Route pour récupérer les 3 théâtres les plus proches d'un point de géolocalisation
+router.get('/theatres-proches', (req, res) => {
+  const { latitude, longitude } = req.query;
+
+  // Validation des paramètres
+  if (!latitude || !longitude) {
+    return res.status(400).json({ message: "Latitude et longitude sont requis." });
+  }
+
+  // Requête SQL pour trouver les théâtres les plus proches
+  const sql = `
+    SELECT 
+        id, 
+        name, 
+        address,
+        ST_Distance_Sphere(geolocation, POINT(?, ?)) AS distance
+    FROM theatre
+    WHERE geolocation IS NOT NULL
+    ORDER BY distance ASC
+    LIMIT 3;
+  `;
+
+  // Exécution de la requête avec les paramètres
+  db.query(sql, [longitude, latitude], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des théâtres proches :", err);
+      return res.status(500).json({ message: "Erreur serveur", error: err.message });
+    }
+    res.status(200).json(results);
+  });
+});
+
+
+//BONUS 
+//SELECT
+// elle marche 
+
+// Route pour récupérer les commentaires avec plus de 5 likes
+router.get('/comments-with-likes', (req, res) => {
+  const sql = `
+    SELECT 
+        id, 
+        comment, 
+        JSON_EXTRACT(reactions, '$.likes') AS likes
+    FROM Schedule
+    WHERE CAST(JSON_EXTRACT(reactions, '$.likes') AS UNSIGNED) > 5;
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des commentaires :", err);
+      return res.status(500).json({ message: "Erreur serveur", error: err.message });
+    }
+    res.status(200).json(results);
+  });
+});
+
+
+
+// Route pour rechercher des mots-clés dans les synopsis des spectacles
+router.get('/search-synopsis', (req, res) => {
+  const { keywords } = req.query;
+
+  if (!keywords) {
+    return res.status(400).json({ message: "Veuillez fournir des mots-clés à rechercher." });
+  }
+
+  const sql = `
+  SELECT 
+      id, 
+      title, 
+      synopsis, 
+      MATCH(synopsis) AGAINST(? IN BOOLEAN MODE) AS score
+  FROM spectacle
+  WHERE MATCH(synopsis) AGAINST(? IN BOOLEAN MODE)
+  ORDER BY score DESC;
+`;
+
+db.query(sql, [`+${keywords.replace(' ', ' +')}`, `+${keywords.replace(' ', ' +')}`], (err, results) => {
+  if (err) {
+    console.error("Erreur lors de la recherche :", err);
+    return res.status(500).json({ message: "Erreur serveur", error: err.message });
+  }
+  res.status(200).json(results);
+});
+
+});
+
+//resultat api postman
+// [
+//   {
+//     "id": 1,
+//     "title": "Rires à la carte",
+//     "synopsis": "Un spectacle hilarant avec les meilleurs humoristes du moment.",
+//     "score": 0.977118134498596
+//   }
+// ]
 
 export default router
