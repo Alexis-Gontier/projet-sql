@@ -748,9 +748,6 @@ router.post('/create-spectacle-representations', (req, res) => {
 //Requete marche, la seul erreur c'est que il faut une clé etrangére 
 //dans la table Shedule pour que la requete fonctionne.
 
-
-
-
 router.put('/set-on-delete-cascade', (req, res) => {
   const sqlDropConstraint = `
     ALTER TABLE Schedule DROP FOREIGN KEY fk_subscriber;

@@ -1381,5 +1381,224 @@
  *                   example: "Détail de l'erreur."
  */
 
-/** INSERT */
+/** INSERT BONUS */
 
+/**
+ * @swagger
+ * /api/v1/create-spectacle-representations:
+ *   post:
+ *     summary: Crée un spectacle avec des représentations associées.
+ *     description: Cet endpoint permet de créer un spectacle et d'y associer plusieurs représentations dans une seule transaction.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Titre du spectacle.
+ *                 example: "Le Roi Lion"
+ *               synopsis:
+ *                 type: string
+ *                 description: Synopsis du spectacle.
+ *                 example: "Un spectacle musical basé sur le célèbre film."
+ *               duration:
+ *                 type: string
+ *                 format: time
+ *                 description: Durée du spectacle au format HH:MM:SS.
+ *                 example: "02:30:00"
+ *               price:
+ *                 type: number
+ *                 format: float
+ *                 description: Prix du spectacle.
+ *                 example: 45.50
+ *               language:
+ *                 type: string
+ *                 enum: [français, VO, surtitré, audio]
+ *                 description: Langue du spectacle.
+ *                 example: "français"
+ *               category_id:
+ *                 type: integer
+ *                 description: Identifiant de la catégorie du spectacle.
+ *                 example: 3
+ *               representations:
+ *                 type: array
+ *                 description: Liste des représentations associées au spectacle.
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     first_date:
+ *                       type: string
+ *                       format: date
+ *                       description: Date de début de la représentation.
+ *                       example: "2024-06-15"
+ *                     last_date:
+ *                       type: string
+ *                       format: date
+ *                       description: Date de fin de la représentation.
+ *                       example: "2024-06-20"
+ *                     room_id:
+ *                       type: integer
+ *                       description: Identifiant de la salle pour la représentation.
+ *                       example: 7
+ *     responses:
+ *       201:
+ *         description: Spectacle et représentations créés avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Spectacle et représentations créés avec succès"
+ *                 spectacleId:
+ *                   type: integer
+ *                   description: Identifiant unique du spectacle nouvellement créé.
+ *                   example: 12
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur pour des données invalides.
+ *                   example: "Données invalides pour le spectacle et représentations"
+ *       500:
+ *         description: Erreur serveur lors de la création du spectacle ou des représentations.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur lors de l'insertion des représentations"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
+
+/** BONUS PUT */
+/**
+ * @swagger
+ * /api/v1/set-on-delete-cascade:
+ *   put:
+ *     summary: Configure la contrainte ON DELETE CASCADE sur la table Schedule.
+ *     description: Cet endpoint met à jour la contrainte de clé étrangère dans la table Schedule pour inclure une action ON DELETE CASCADE sur la relation avec la table Subscriber.
+ *     responses:
+ *       200:
+ *         description: Contrainte ON DELETE CASCADE configurée avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message confirmant la mise à jour.
+ *                   example: "ON DELETE CASCADE configuré avec succès"
+ *       500:
+ *         description: Erreur lors de la configuration de la contrainte.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur lors de la suppression de la contrainte existante"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Erreur SQL lors de l'ajout de la contrainte."
+ */
+
+/** BONUS PUT */
+
+/**
+ * @swagger
+ * /api/v1/add-reaction/{id}:
+ *   put:
+ *     summary: Ajouter ou retirer une réaction sur un commentaire utilisateur.
+ *     description: >
+ *       Cette route permet d'ajouter ou de retirer une réaction (exemple : like, dislike) 
+ *       associée à un commentaire dans la table Schedule, en modifiant les données 
+ *       stockées sous forme de JSON.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la ligne Schedule sur laquelle appliquer la réaction.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reactionType:
+ *                 type: string
+ *                 description: >
+ *                   Type de réaction à ajouter ou retirer 
+ *                   (exemple : likes, dislike, hugs).
+ *                 example: "likes"
+ *               action:
+ *                 type: string
+ *                 enum: [add, remove]
+ *                 description: Action à effectuer (add pour ajouter, remove pour retirer).
+ *                 example: "add"
+ *     responses:
+ *       200:
+ *         description: Réaction mise à jour avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Réaction mise à jour avec succès"
+ *                 affectedRows:
+ *                   type: integer
+ *                   description: Nombre de lignes affectées par la mise à jour.
+ *                   example: 1
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur.
+ *                   example: "Données invalides fournies"
+ *       500:
+ *         description: Erreur serveur lors de la mise à jour de la réaction.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur lors de la mise à jour des réactions"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur SQL"
+ */
