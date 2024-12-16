@@ -899,26 +899,28 @@ router.get('/search-synopsis', (req, res) => {
     return res.status(400).json({ message: "Veuillez fournir des mots-clés à rechercher." });
   }
 
+  // Construire la clause LIKE pour chaque mot-clé
+  const keywordArray = keywords.split(' ').map((keyword) => `%${keyword}%`);
+  const likeClauses = keywordArray.map(() => `synopsis LIKE ?`).join(' AND ');
+
   const sql = `
-  SELECT 
-      id, 
-      title, 
-      synopsis, 
-      MATCH(synopsis) AGAINST(? IN BOOLEAN MODE) AS score
-  FROM spectacle
-  WHERE MATCH(synopsis) AGAINST(? IN BOOLEAN MODE)
-  ORDER BY score DESC;
-`;
+    SELECT 
+        id, 
+        title, 
+        synopsis
+    FROM spectacle
+    WHERE ${likeClauses};
+  `;
 
-db.query(sql, [`+${keywords.replace(' ', ' +')}`, `+${keywords.replace(' ', ' +')}`], (err, results) => {
-  if (err) {
-    console.error("Erreur lors de la recherche :", err);
-    return res.status(500).json({ message: "Erreur serveur", error: err.message });
-  }
-  res.status(200).json(results);
+  db.query(sql, keywordArray, (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la recherche :", err);
+      return res.status(500).json({ message: "Erreur serveur", error: err.message });
+    }
+    res.status(200).json(results);
+  });
 });
 
-});
 
 //resultat api postman
 // [

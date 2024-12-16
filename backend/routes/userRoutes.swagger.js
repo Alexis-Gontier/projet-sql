@@ -1602,3 +1602,190 @@
  *                   description: Détails techniques de l'erreur.
  *                   example: "Détail de l'erreur SQL"
  */
+
+/** BONUS SELECT */
+
+/**
+ * @swagger
+ * /api/v1/theatres-proches:
+ *   get:
+ *     summary: Récupérer les 3 théâtres les plus proches d'un point de géolocalisation.
+ *     description: >
+ *       Cette route retourne les 3 théâtres les plus proches en fonction des coordonnées 
+ *       de latitude et longitude fournies. La distance est calculée en utilisant la fonction 
+ *       `ST_Distance_Sphere` pour les points géographiques stockés dans la base de données.
+ *     parameters:
+ *       - in: query
+ *         name: latitude
+ *         required: true
+ *         schema:
+ *           type: number
+ *           format: double
+ *         description: Latitude du point de géolocalisation.
+ *         example: 48.8566
+ *       - in: query
+ *         name: longitude
+ *         required: true
+ *         schema:
+ *           type: number
+ *           format: double
+ *         description: Longitude du point de géolocalisation.
+ *         example: 2.3522
+ *     responses:
+ *       200:
+ *         description: Liste des 3 théâtres les plus proches.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: Identifiant unique du théâtre.
+ *                     example: 1
+ *                   name:
+ *                     type: string
+ *                     description: Nom du théâtre.
+ *                     example: "Théâtre des Champs-Élysées"
+ *                   address:
+ *                     type: string
+ *                     description: Adresse du théâtre.
+ *                     example: "15 Avenue Montaigne, 75008 Paris, France"
+ *                   distance:
+ *                     type: number
+ *                     format: double
+ *                     description: Distance en mètres entre le point fourni et le théâtre.
+ *                     example: 1234.56
+ *       400:
+ *         description: Paramètres de requête manquants ou invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur expliquant le problème.
+ *                   example: "Latitude et longitude sont requis."
+ *       500:
+ *         description: Erreur interne du serveur lors de la récupération des théâtres proches.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message général d'erreur serveur.
+ *                   example: "Erreur serveur"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur SQL"
+ */
+
+/**
+ * @swagger
+ * /api/v1/comments-with-likes:
+ *   get:
+ *     summary: Récupérer les commentaires ayant plus de 5 likes.
+ *     description: >
+ *       Cette route retourne les commentaires de la table `Schedule` dont le champ JSON `reactions.likes` contient une valeur supérieure à 5.
+ *     responses:
+ *       200:
+ *         description: Liste des commentaires ayant plus de 5 likes.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: Identifiant unique du commentaire.
+ *                     example: 1
+ *                   comment:
+ *                     type: string
+ *                     description: Texte du commentaire.
+ *                     example: "Ce spectacle était incroyable !"
+ *                   likes:
+ *                     type: integer
+ *                     description: Nombre de likes associés au commentaire.
+ *                     example: 10
+ *       500:
+ *         description: Erreur interne du serveur lors de la récupération des commentaires.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message général d'erreur serveur.
+ *                   example: "Erreur serveur"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur SQL"
+ */
+
+/**
+ * @swagger
+ * /api/v1/search-synopsis:
+ *   get:
+ *     summary: Rechercher des mots-clés dans les synopsis des spectacles
+ *     description: Cette route permet de rechercher des mots-clés dans les synopsis des spectacles.
+ *     parameters:
+ *       - in: query
+ *         name: keywords
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Les mots-clés à rechercher dans les synopsis des spectacles.
+ *     responses:
+ *       200:
+ *         description: Résultats des spectacles correspondant aux mots-clés.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: L'identifiant du spectacle.
+ *                   title:
+ *                     type: string
+ *                     description: Le titre du spectacle.
+ *                   synopsis:
+ *                     type: string
+ *                     description: Le synopsis du spectacle.
+ *       400:
+ *         description: Les mots-clés n'ont pas été fournis.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Veuillez fournir des mots-clés à rechercher.
+ *       500:
+ *         description: Erreur serveur lors de la recherche.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Erreur serveur
+ *                 error:
+ *                   type: string
+ *                   description: Le message d'erreur détaillé.
+ */
+
