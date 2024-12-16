@@ -1,3 +1,4 @@
+/** GET */
 /**
  * @swagger
  * /api/v1/theatres:
@@ -660,7 +661,7 @@
  *                     type: string
  *                     description: "Détails techniques de l'erreur"
  *                     example: "Détail de l'erreur."
- */
+*/
 
 /**
  * @swagger
@@ -671,7 +672,6 @@
  *       Cet endpoint retourne la liste des spectacles ayant affiché complet, 
  *       en fonction des salles ayant atteint leur capacité maximale et dont les représentations sont terminées.
  *       Dans le cas où l'array est vide c'est qu'il n'y a pas de spectacle ayant à la fois affiché complet, et dont les reprséentation sont terminés.
- *     tags: [Spectacles]
  *     responses:
  *       200:
  *         description: Liste des spectacles complets.
@@ -705,4 +705,54 @@
  *                   type: string
  *                   description: Détails techniques de l'erreur.
  *                   example: "Détail de l'erreur."
- */
+*/
+
+/**
+ * @swagger
+ * /api/v1/artistes-preferes:
+ *   get:
+ *     summary: Récupère les artistes préférés des spectateurs
+ *     description: |
+ *       Cet endpoint retourne la liste des artistes préférés des spectateurs,
+ *       basée sur la moyenne des notations des spectacles auxquels ils ont participé.
+ *     responses:
+ *       200:
+ *         description: Liste des artistes préférés avec leur moyenne de notes.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   firstName:
+ *                     type: string
+ *                     description: Prénom de l'artiste.
+ *                     example: "Jean"
+ *                   lastName:
+ *                     type: string
+ *                     description: Nom de famille de l'artiste.
+ *                     example: "Dupont"
+ *                   avg_rating:
+ *                     type: number
+ *                     format: float
+ *                     description: Moyenne des notations des spectacles auxquels l'artiste a participé.
+ *                     example: 4.8
+ *       500:
+ *         description: Erreur serveur lors de la récupération des données.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de la récupération des données."
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+*/
+
+/** POST */

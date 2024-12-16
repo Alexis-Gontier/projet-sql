@@ -455,13 +455,16 @@ router.get('/spectacles-complet', (req, res) => {
 // 17. Quels sont les artistes préférés des spectateurs ?
 router.get('/artistes-preferes', (req, res) => {
   const sql = `
-    SELECT Artist.firstName, Artist.lastName, AVG(Spectacle.rating) AS avg_rating
+    SELECT 
+        Artist.firstName,
+        Artist.lastName,
+        AVG(JSON_EXTRACT(Schedule.reactions, '$.likes')) AS avg_likes
     FROM Role
     JOIN Spectacle ON Role.spectacle_id = Spectacle.id
-    JOIN Rating ON Spectacle.id = Rating.spectacle_id
+    JOIN Schedule ON Spectacle.id = Schedule.id
     JOIN Artist ON Role.artist_id = Artist.id
     GROUP BY Artist.id
-    ORDER BY avg_rating DESC;
+    ORDER BY avg_likes DESC;
   `;
 
   db.query(sql, (err, results) => {
@@ -475,6 +478,7 @@ router.get('/artistes-preferes', (req, res) => {
     res.json(results);
   });
 });
+
 
 // POST
 // ========================================================================
