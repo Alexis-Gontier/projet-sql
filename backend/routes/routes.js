@@ -484,13 +484,13 @@ router.get('/artistes-preferes', (req, res) => {
 // ========================================================================
 
 // 1. Créer un utilisateur (s'inscrire)
-router.post('/create-user', (req, res) => {
-  const { username, password, email } = req.body;
+router.post('/register', (req, res) => {
+  const { username, password, email, birthdate, first_name, last_name } = req.body;
   const sql = `
-    INSERT INTO User (username, password, email) VALUES (?, ?, ?);
+    INSERT INTO subscriber (username, password, email, birthdate, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?);
   `;
 
-  db.query(sql, [username, password, email], (err, results) => {
+  db.query(sql, [username, password, email, birthdate, first_name, last_name], (err, results) => {
     if (err) {
       console.error("Erreur lors de l'inscription :", err);
       return res.status(500).json({

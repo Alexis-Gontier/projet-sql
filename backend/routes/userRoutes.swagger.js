@@ -756,3 +756,88 @@
 */
 
 /** POST */
+/**
+ * @swagger
+ * /api/v1/register:
+ *   post:
+ *     summary: Crée un nouvel utilisateur (inscription).
+ *     description: |
+ *       Cet endpoint permet à un utilisateur de s'inscrire en fournissant un nom d'utilisateur, un mot de passe, une adresse e-mail,
+ *       une date de naissance, un prénom et un nom de famille.
+ *       Si la création réussit, l'ID de l'utilisateur nouvellement créé est retourné.
+ *     tags: [Utilisateurs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: Nom d'utilisateur choisi par l'utilisateur.
+ *                 example: "johndoe"
+ *               password:
+ *                 type: string
+ *                 description: Mot de passe de l'utilisateur.
+ *                 example: "P@ssw0rd"
+ *               email:
+ *                 type: string
+ *                 description: Adresse e-mail de l'utilisateur.
+ *                 example: "johndoe@example.com"
+ *               birthdate:
+ *                 type: string
+ *                 format: date
+ *                 description: Date de naissance de l'utilisateur (format YYYY-MM-DD).
+ *                 example: "1990-01-01"
+ *               first_name:
+ *                 type: string
+ *                 description: Prénom de l'utilisateur.
+ *                 example: "John"
+ *               last_name:
+ *                 type: string
+ *                 description: Nom de famille de l'utilisateur.
+ *                 example: "Doe"
+ *     responses:
+ *       201:
+ *         description: Utilisateur créé avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation de la création de l'utilisateur.
+ *                   example: "Utilisateur créé avec succès"
+ *                 userId:
+ *                   type: integer
+ *                   description: Identifiant unique de l'utilisateur nouvellement créé.
+ *                   example: 123
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur pour des données invalides.
+ *                   example: "Les données fournies ne sont pas valides."
+ *       500:
+ *         description: Erreur serveur lors de la création de l'utilisateur.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de l'inscription"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
