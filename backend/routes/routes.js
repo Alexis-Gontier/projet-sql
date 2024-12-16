@@ -421,13 +421,22 @@ router.get('/revenues-by-spectacle', (req, res) => {
 // 16. Y a-t-il des spectacles qui ont affiché complet parmi ceux qui ne se jouent plus ?
 router.get('/spectacles-complet', (req, res) => {
   const sql = `
-    SELECT Spectacle.title, Theatre.name AS theatre_name
-    FROM Schedule
-    JOIN Representation ON Schedule.date = Representation.first_date
-    JOIN Spectacle ON Representation.spectacle_id = Spectacle.id
-    JOIN Room ON Representation.room_id = Room.id
-    JOIN Theatre ON Room.theatre_id = Theatre.id
-    WHERE Schedule.booked >= Room.gauge AND Schedule.end_date < NOW();
+    SELECT
+      Spectacle.title,
+      Theatre.name AS theatre_name
+    FROM
+      Schedule
+    JOIN Representation
+      ON Schedule.date BETWEEN Representation.first_date AND Representation.last_date
+    JOIN Spectacle
+      ON Representation.spectacle_id = Spectacle.id
+    JOIN Room
+      ON Representation.room_id = Room.id
+    JOIN Theatre
+      ON Room.theatre_id = Theatre.id
+    WHERE
+      Schedule.booked >= Room.gauge
+      AND Representation.last_date < NOW();
   `;
 
   db.query(sql, (err, results) => {
@@ -441,6 +450,7 @@ router.get('/spectacles-complet', (req, res) => {
     res.json(results);
   });
 });
+
 
 // 17. Quels sont les artistes préférés des spectateurs ?
 router.get('/artistes-preferes', (req, res) => {

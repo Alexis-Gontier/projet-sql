@@ -661,3 +661,48 @@
  *                     description: "Détails techniques de l'erreur"
  *                     example: "Détail de l'erreur."
  */
+
+/**
+ * @swagger
+ * /api/v1/spectacles-complet:
+ *   get:
+ *     summary: Récupère les spectacles ayant affiché complet parmi ceux qui ne se jouent plus.
+ *     description: |
+ *       Cet endpoint retourne la liste des spectacles ayant affiché complet, 
+ *       en fonction des salles ayant atteint leur capacité maximale et dont les représentations sont terminées.
+ *       Dans le cas où l'array est vide c'est qu'il n'y a pas de spectacle ayant à la fois affiché complet, et dont les reprséentation sont terminés.
+ *     tags: [Spectacles]
+ *     responses:
+ *       200:
+ *         description: Liste des spectacles complets.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   title:
+ *                     type: string
+ *                     description: Titre du spectacle.
+ *                     example: "Le Lac des Cygnes"
+ *                   theatre_name:
+ *                     type: string
+ *                     description: Nom du théâtre où le spectacle a été joué.
+ *                     example: "Théâtre National"
+ *       500:
+ *         description: Erreur serveur lors de la récupération des données.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de la récupération des données."
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
