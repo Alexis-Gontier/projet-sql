@@ -11,7 +11,7 @@ export default function Home() {
   const [errorCounts, setErrorCounts] = useState(null);
   const navigate = useNavigate();
 
-  // Charger les données pour les catégories avec le nombre de spectacles
+  // Charge les données pour les catégories avec le nombre de spectacles
   useEffect(() => {
     const loadSpectacleCounts = async () => {
       try {
@@ -27,7 +27,7 @@ export default function Home() {
     loadSpectacleCounts();
   }, []);
 
-  // Redirection vers la page des spectacles pour la catégorie sélectionnée
+  // Redirec
   const handleNavigate = () => {
     if (selectedCategory) {
       navigate(`/spectacles-en-cours/${selectedCategory}`);
@@ -74,7 +74,7 @@ export default function Home() {
       <div className="flex items-center gap-4">
         <select
           id="category-select"
-          className="border border-gray-400 rounded-md p-2 w-full sm:w-auto bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-400 rounded-md p-2 w-full sm:w-auto bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >

@@ -12,6 +12,7 @@ export const fetchTheatres = async () => {
     throw error;
   }
 };
+
 // 2
 export const fetchSpectaclesByBorough = async (borough) => {
   try {
@@ -22,6 +23,7 @@ export const fetchSpectaclesByBorough = async (borough) => {
     throw error;
   }
 };
+
 // 3
 export const fetchSallesByBorough = async (borough) => {
   try {
@@ -47,20 +49,19 @@ export const fetchSpectaclesByCategory = async (category) => {
 // 5
 export const fetchSpectacleCounts = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/nb-spectacles`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching spectacles:', error);
-    throw error;
-  }
+  const response = await axios.get(`${BASE_URL}/nb-spectacles`); 
+  return response.data;
+} catch (error) {
+  console.error('Error fetching spectacles:', error);
+  throw error;
+}
 };
 
-//6 
-
+// 6
 export const fetchSpectacleDetails = async (id) => {
   try {
     const response = await axios.get(`${BASE_URL}/spectacle/${id}`);
-    return response.data;  
+    return response.data;
   } catch (err) {
     console.error('Error fetching spectacle details:', err);
     throw err;

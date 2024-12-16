@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import flowersImage from '../assets/images/flowers.webp';
+import imgArt from '../assets/images/art.svg';
 
 export default function AuthLayout() {
   return (
@@ -10,8 +10,8 @@ export default function AuthLayout() {
 
       <div className="w-full h-screen p-5">
         <img
-          src={flowersImage}
-          alt="bouquet of flowers"
+          src={imgArt}
+          alt="Art Society"
           className="w-full h-full object-cover rounded-3xl"
         />
       </div>

@@ -186,3 +186,43 @@ WHERE id = 2;
 -- d'utiliser la clause MATCH
 ALTER TABLE spectacle ADD FULLTEXT(synopsis);
 
+-- Ajouter des spectacles supplémentaires
+INSERT INTO spectacle (title, synopsis, duration, price, language, category_id) VALUES
+('Les Trois Mousquetaires', 'Une adaptation théâtrale du célèbre roman d\'Alexandre Dumas.', '02:30:00', 45, 'français', 2),
+('Cendrillon', 'Un conte de fées intemporel adapté en comédie musicale.', '01:45:00', 30, 'français', 4),
+('Le Cid', 'Une tragédie de Corneille, un classique du théâtre français.', '02:00:00', 40, 'français', 2),
+('La Belle et la Bête', 'Une histoire d\'amour magique entre un prince et une belle jeune femme.', '02:10:00', 50, 'français', 4),
+('Les Choristes', 'L\'histoire d\'une école de musique et de rédemption.', '02:15:00', 60, 'français', 3);
+
+-- Ajouter des représentations pour les nouveaux spectacles
+INSERT INTO representation (first_date, last_date, spectacle_id, room_id) VALUES
+('2025-01-05 20:00:00', '2025-02-05 20:00:00', 6, 1),
+('2025-02-10 15:00:00', '2025-02-20 15:00:00', 7, 2),
+('2025-03-01 20:00:00', '2025-03-31 20:00:00', 8, 1),
+('2025-04-01 20:00:00', '2025-04-30 20:00:00', 9, 2),
+('2025-05-01 20:00:00', '2025-05-31 20:00:00', 10, 1);
+
+-- Ajouter des réservations pour les spectacles
+INSERT INTO schedule (date, booked, paid, amount, comment, notation, reactions) VALUES
+('2025-01-06 20:00:00', 150, TRUE, 4500.00, 'Un spectacle grandiose.', 5, '{"likes": 100, "dislikes": 2, "surprised": 5, "hugs": 10}'),
+('2025-02-12 15:00:00', 120, TRUE, 3600.00, 'Très bon spectacle.', 4, '{"likes": 80, "dislikes": 5, "surprised": 2, "hugs": 8}'),
+('2025-03-02 20:00:00', 180, TRUE, 5400.00, 'Un chef-d\'œuvre.', 5, '{"likes": 150, "dislikes": 3, "surprised": 6, "hugs": 15}'),
+('2025-04-02 20:00:00', 130, TRUE, 3900.00, 'Magnifique performance.', 4, '{"likes": 100, "dislikes": 1, "surprised": 4, "hugs": 12}'),
+('2025-05-02 20:00:00', 160, TRUE, 4800.00, 'Une expérience incroyable.', 5, '{"likes": 120, "dislikes": 2, "surprised": 7, "hugs": 14}');
+
+-- Ajouter des rôles pour les artistes
+INSERT INTO role (role, artist_id, spectacle_id) VALUES
+('Héros', 1, 6),
+('Antagoniste', 2, 7),
+('Chanteuse principale', 3, 8),
+('Danseur principal', 4, 9),
+('Choriste', 5, 10);
+
+-- Ajout de données de rôle requête 9
+INSERT INTO Role (role, artist_id, spectacle_id) VALUES
+('Acteur principal', 1, 1), -- Jean dans Spectacle 1
+('Acteur secondaire', 2, 1), -- Marie dans Spectacle 1
+('Acteur principal', 1, 2), -- Jean dans Spectacle 2
+('Acteur secondaire', 2, 2), -- Marie dans Spectacle 2
+('Acteur principal', 1, 3), -- Jean dans Spectacle 3
+('Acteur secondaire', 3, 3); -- Paul dans Spectacle 3

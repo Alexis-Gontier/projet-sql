@@ -15,7 +15,7 @@ export default function Header() {
       <div className="max-w-6xl mx-auto py-4 flex justify-between items-center">
 
         <nav className="text-normal font-semibold">
-          <Link to={"/"}>OpenIA</Link>
+          <Link to={"/"}>Society</Link>
         </nav>
 
         <nav className="group">
