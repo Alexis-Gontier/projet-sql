@@ -1057,7 +1057,6 @@
  *   put:
  *     summary: Met à jour le mot de passe d'un utilisateur.
  *     description: Cet endpoint permet de modifier le mot de passe d'un utilisateur en fournissant son identifiant et un nouveau mot de passe.
- *     tags: [Utilisateurs]
  *     parameters:
  *       - name: user_id
  *         in: path
@@ -1116,3 +1115,271 @@
  *                   description: Détails techniques de l'erreur.
  *                   example: "Détail de l'erreur."
  */
+
+/**
+ * @swagger
+ * /api/v1/add-reservation/{schedule_id}:
+ *   put:
+ *     summary: Ajouter une place à une réservation non payée et mettre à jour le montant total.
+ *     description: Cet endpoint permet d'ajouter des places à une réservation spécifique si le paiement n'a pas encore été effectué, et met à jour le montant total à payer.
+ *     parameters:
+ *       - name: schedule_id
+ *         in: path
+ *         required: true
+ *         description: Identifiant de la session de la réservation.
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               additional_booked:
+ *                 type: integer
+ *                 description: Nombre de places supplémentaires à ajouter à la réservation.
+ *                 example: 2
+ *               new_total_amount:
+ *                 type: number
+ *                 format: float
+ *                 description: Nouveau montant total à payer après l'ajout des places.
+ *                 example: 150.0
+ *     responses:
+ *       200:
+ *         description: Réservation mise à jour avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Réservation mise à jour avec succès"
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur pour des données invalides.
+ *                   example: "Les données fournies ne sont pas valides."
+ *       500:
+ *         description: Erreur serveur lors de la mise à jour de la réservation.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de l'ajout"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
+
+/**
+ * @swagger
+ * /api/v1/increase-spectacle-price/{date}:
+ *   put:
+ *     summary: Augmente le prix des spectacles d'un jour donné de 10%.
+ *     description: Cet endpoint applique une augmentation de 10% sur le prix des spectacles ayant lieu un jour donné, sauf pour les réservations déjà payées.
+ *     parameters:
+ *       - name: date
+ *         in: path
+ *         required: true
+ *         description: La date des spectacles concernés (format YYYY-MM-DD).
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2024-12-25"
+ *     responses:
+ *       200:
+ *         description: Les prix des spectacles ont été mis à jour avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Prix des spectacles mis à jour avec succès"
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur pour des données invalides.
+ *                   example: "Les données fournies ne sont pas valides."
+ *       500:
+ *         description: Erreur serveur lors de la mise à jour des prix.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de l'augmentation"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
+
+/** DELETE */
+
+/**
+ * @swagger
+ * /api/v1/delete-reservation:
+ *   delete:
+ *     summary: Supprime une réservation en fonction du spectateur et du spectacle.
+ *     description: Cet endpoint permet de supprimer une réservation spécifique en fournissant l'identifiant de l'utilisateur et celui du spectacle.
+ *     tags: [Pb bdd]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_id:
+ *                 type: integer
+ *                 description: Identifiant de l'utilisateur ayant effectué la réservation.
+ *                 example: 42
+ *               spectacle_id:
+ *                 type: integer
+ *                 description: Identifiant du spectacle lié à la réservation.
+ *                 example: 15
+ *     responses:
+ *       200:
+ *         description: Réservation supprimée avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Réservation supprimée avec succès"
+ *       404:
+ *         description: Aucune réservation trouvée correspondant aux critères fournis.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur indiquant qu'aucune réservation n'a été trouvée.
+ *                   example: "Aucune réservation trouvée pour ces critères"
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur pour des données invalides.
+ *                   example: "Les données fournies ne sont pas valides."
+ *       500:
+ *         description: Erreur serveur lors de la suppression de la réservation.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de la suppression"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
+
+/**
+ * @swagger
+ * /api/v1/cancel-spectacle/{spectacle_id}:
+ *   delete:
+ *     summary: Annule un spectacle spécifique.
+ *     description: Cet endpoint permet de supprimer un spectacle en fournissant son identifiant.
+ *     parameters:
+ *       - name: spectacle_id
+ *         in: path
+ *         required: true
+ *         description: Identifiant du spectacle à annuler.
+ *         schema:
+ *           type: integer
+ *           example: 15
+ *     responses:
+ *       200:
+ *         description: Spectacle annulé avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Spectacle annulé avec succès"
+ *       404:
+ *         description: Spectacle non trouvé.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur indiquant que le spectacle n'a pas été trouvé.
+ *                   example: "Spectacle non trouvé"
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur pour des données invalides.
+ *                   example: "Les données fournies ne sont pas valides."
+ *       500:
+ *         description: Erreur serveur lors de l'annulation du spectacle.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de l'annulation"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
+
+/** INSERT */
+
