@@ -308,22 +308,28 @@ router.get('/categories-places-reservees', (req, res) => {
 });
 
 // 12. Recommandation : proposer à un personne X des spectacles qu'elle pourrait aimer
-router.get('/recommandation/:schedule_id', (req, res) => {
-  const scheduleId = req.params.schedule_id;
+router.get('/spectacles-likes', (req, res) => {
   const sql = `
-    SELECT DISTINCT s2.title
-    FROM Schedule sch1
-    JOIN Schedule sch2 ON sch1.date = sch2.date AND sch1.id <> sch2.id
-    JOIN Representation r1 ON sch1.date = r1.first_date
-    JOIN Representation r2 ON sch2.date = r2.first_date
-    JOIN Spectacle s1 ON r1.spectacle_id = s1.id
-    JOIN Spectacle s2 ON r2.spectacle_id = s2.id
-    WHERE sch1.id = ?;
+    SELECT 
+        sp.title AS spectacle_title,
+        AVG(CAST(JSON_EXTRACT(s.reactions, '$.likes') AS UNSIGNED)) AS avg_likes
+    FROM 
+        spectacle sp
+    JOIN 
+        representation rep ON sp.id = rep.spectacle_id
+    JOIN 
+        schedule s ON rep.id = s.id
+    WHERE 
+        JSON_EXTRACT(s.reactions, '$.likes') IS NOT NULL
+    GROUP BY 
+        sp.id, sp.title
+    ORDER BY 
+        avg_likes DESC;
   `;
 
-  db.query(sql, [scheduleId], (err, results) => {
+  db.query(sql, (err, results) => {
     if (err) {
-      console.error("Erreur lors de la récupération des recommandations :", err);
+      console.error("Erreur lors de la récupération des données :", err);
       return res.status(500).json({
         message: "Erreur de serveur lors de la récupération des données",
         error: err.message
@@ -336,14 +342,24 @@ router.get('/recommandation/:schedule_id', (req, res) => {
 // 13. Afficher la liste des théâtres, triée par la note moyenne obtenue par les spectacles qui s'y sont joués
 router.get('/theatres-notes', (req, res) => {
   const sql = `
-    SELECT Theatre.name, AVG(Spectacle.rating) AS avg_rating
-    FROM Theatre
-    JOIN Room ON Theatre.id = Room.theatre_id
-    JOIN Representation ON Room.id = Representation.room_id
-    JOIN Spectacle ON Representation.spectacle_id = Spectacle.id
-    GROUP BY Theatre.name
-    ORDER BY avg_rating DESC;
-  `;
+  SELECT 
+      Theatre.name AS theatre_name, 
+      SUM(spectacle_avg.avg_rating) AS total_avg_rating
+  FROM Theatre
+  JOIN Room ON Theatre.id = Room.theatre_id
+  JOIN Representation ON Room.id = Representation.room_id
+  JOIN (
+      SELECT 
+          Spectacle.id AS spectacle_id, 
+          AVG(Schedule.notation) AS avg_rating
+      FROM Spectacle
+      JOIN Schedule ON Spectacle.id = Schedule.spectacle_id
+      GROUP BY Spectacle.id
+  ) AS spectacle_avg ON Representation.spectacle_id = spectacle_avg.spectacle_id
+  GROUP BY Theatre.name
+  ORDER BY total_avg_rating DESC;
+`;
+
 
   db.query(sql, (err, results) => {
     if (err) {

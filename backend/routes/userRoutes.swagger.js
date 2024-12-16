@@ -67,7 +67,7 @@
  *         description: Spectacle non trouvé
  *       500:
  *         description: Erreur serveur
- */
+*/
 
 /**
  * @swagger
@@ -102,7 +102,7 @@
  *         description: Aucun spectacle trouvé pour cet arrondissement
  *       500:
  *         description: Erreur serveur
- */
+*/
 /**
  * @swagger
  * /api/v1/spectacles-en-cours/{category}:
@@ -147,7 +147,7 @@
  *         description: Aucun spectacle en cours trouvé pour la catégorie donnée.
  *       500:
  *         description: Erreur serveur interne.
- */
+*/
 
 /**
  * @swagger
@@ -173,7 +173,7 @@
  *                     description: Nombre de spectacles dans cette catégorie
  *       500:
  *         description: Erreur serveur interne lors de la récupération des données.
- */
+*/
 
 /**
  * @swagger
@@ -195,7 +195,7 @@
  *                   description: Nombre moyen de places réservées
  *       500:
  *         description: Erreur serveur interne lors de la récupération des données.
- */
+*/
 /**
  * @swagger
  * /api/v1/distribution-reservations:
@@ -220,12 +220,14 @@
  *                     description: Nombre total de personnes ayant réservé ce nombre de places.
  *       500:
  *         description: Erreur serveur interne lors de la récupération des données.
- */
+*/
 
 /**
  * @swagger
  * /api/v1/taux-remplissage/{spectacleId}:
  *   get:
+ *     tags:
+ *       - Problème à régler
  *     summary: Afficher le taux de remplissage des salles pour un spectacle spécifique
  *     description: Retourne le taux de remplissage des salles pour le spectacle spécifié, en pourcentage.
  *     parameters:
@@ -254,7 +256,7 @@
  *                     format: float
  *       500:
  *         description: Erreur serveur interne lors de la récupération des données.
- */
+*/
 
 /**
  * @swagger
@@ -331,7 +333,7 @@
  *             example:
  *               message: "Erreur de serveur lors de la récupération des données"
  *               error: "Détails de l'erreur"
- */
+*/
 
 /**
  * @swagger
@@ -392,7 +394,7 @@
  *             example:
  *               message: "Erreur de serveur lors de la récupération des données"
  *               error: "Détail de l'erreur SQL ou autre"
- */
+*/
 
 /**
  * @swagger
@@ -433,5 +435,148 @@
  *                   type: string
  *                   description: Description détaillée de l'erreur.
  *                   example: "Erreur SQL: Table non trouvée"
+*/
+/**
+ * @swagger
+ * paths:
+ *   /api/v1/recommandation/{schedule_id}:
+ *     get:
+ *       tags:
+ *         - Problème à régler
+ *       summary: "Obtenir des recommandations de spectacles pour une planification spécifique"
+ *       description: |
+ *         Cet endpoint propose des recommandations de spectacles basées sur des spectateurs qui ont réservé
+ *         pour des spectacles ayant lieu à la même date que celui correspondant à l'`id` donné.
+ *       parameters:
+ *         - name: schedule_id
+ *           in: path
+ *           description: "L'identifiant unique de la réservation (Schedule ID) pour laquelle on souhaite obtenir des recommandations."
+ *           required: true
+ *           schema:
+ *             type: integer
+ *             example: 1
+ *       responses:
+ *         '200':
+ *           description: "Liste des spectacles recommandés."
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     title:
+ *                       type: string
+ *                       description: "Titre du spectacle recommandé"
+ *                       example: "Les Misérables"
+ *         '400':
+ *           description: "Requête invalide. Vérifiez les paramètres fournis."
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: "Requête invalide : l'ID de planification est manquant ou incorrect."
+ *         '500':
+ *           description: "Erreur de serveur lors de la récupération des recommandations."
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: "Erreur de serveur lors de la récupération des données"
+ *                   error:
+ *                     type: string
+ *                     example: "Détails techniques de l'erreur."
  */
 
+/**
+ * @swagger
+ *  /api/v1/spectacles-likes:
+ *   get:
+ *     summary: Obtenir la liste des spectacles triée par la moyenne des likes
+ *     description: Retourne une liste des spectacles avec leur titre et la moyenne des "likes" obtenus via les réactions des spectateurs.
+ *       Les spectacles sont triés par ordre décroissant de la moyenne des likes. On pourra par la suite faire un trie pour proposer le spectacle du même genre le plus aimé.
+ *     responses:
+ *       200:
+ *         description: Liste des spectacles triée par moyenne des likes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   spectacle_title:
+ *                     type: string
+ *                     description: Le titre du spectacle
+ *                     example: Les Misérables
+ *                   avg_likes:
+ *                     type: number
+ *                     format: float
+ *                     description: La moyenne des "likes" pour ce spectacle
+ *                     example: 444
+ *       500:
+ *         description: Erreur serveur lors de la récupération des données
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur
+ *                   example: "Erreur de serveur lors de la récupération des données"
+ *                 error:
+ *                   type: string
+ *                   description: Détail de l'erreur
+ *                   example: "ER_BAD_FIELD_ERROR: Champ inconnu dans la requête"
+ */
+
+/**
+ * @swagger
+ * /api/v1/theatres-notes:
+ *   get:
+ *     summary: Obtenir la liste des théâtres triée par la note moyenne des spectacles
+ *     description: Retourne une liste des théâtres avec leur nom et la note moyenne des spectacles joués dans leurs salles. Les théâtres sont triés par ordre décroissant de la note moyenne.
+ *     tags:
+ *       - Problème à régler
+ *     responses:
+ *       200:
+ *         description: Liste des théâtres triée par note moyenne des spectacles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                     description: Le nom du théâtre
+ *                     example: Théâtre de Paris
+ *                   avg_rating:
+ *                     type: number
+ *                     format: float
+ *                     description: La note moyenne des spectacles joués dans le théâtre
+ *                     example: 4.7
+ *       500:
+ *         description: Erreur serveur lors de la récupération des données
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur
+ *                   example: "Erreur de serveur lors de la récupération des données"
+ *                 error:
+ *                   type: string
+ *                   description: Détail de l'erreur
+ *                   example: "ER_BAD_FIELD_ERROR: Champ inconnu dans la requête"
+ */
