@@ -1,29 +1,30 @@
-// Imports
-import express from "express"
-import cors from "cors"
+// server.js
+import express from 'express';
+import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocs from './routes/config.js';
+import userRoutes from './routes/routes.js'; // Importez les routes ici
 
-// Routes des routes
-import userRoutes from './routes/routes.js'
-
-const app = express()
-const PORT = process.env.PORT | 3000
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware global
-app.use(cors())
-app.use(express.json())
-// Permet de traiter les données envoyées par des formulaires HTML classiques
+app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Routes
+app.use('/api/v1', userRoutes); // Vous associez les routes avec le préfixe /api/v1
 
-// Utilisation des routes
-app.use('/api/v1', userRoutes);
+// Documentation Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Route par défaut
 app.get('/', (req, res) => {
-    res.send('API is running :)')
-})
+  res.send('API is running :)');
+});
 
 // Démarrage du serveur
 app.listen(PORT, () => {
-    console.log(`Serveur up sur: http://localhost:${PORT}`)
-})
+  console.log(`Serveur lancé sur http://localhost:${PORT}`);
+});

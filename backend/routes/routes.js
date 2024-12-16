@@ -6,8 +6,7 @@ const router = express.Router()
 router.get('/', (req, res) => {
   res.send("Hello World")
 })
-
-// 1. Afficher la liste des lieux de spectacle
+// 1. Afficher la liste des théâtres
 router.get('/theatres', (req, res) => {
   const sql = `SELECT id, name, address, borough FROM Theatre;`;
 
@@ -23,7 +22,7 @@ router.get('/theatres', (req, res) => {
   });
 });
 
-// Récupérer les detail d'un spectacle
+// 6 Récupérer les detail d'un spectacle
 router.get('/spectacle/:id', (req, res) => {
   const spectacleId = req.params.id;
   const sql = `
@@ -195,9 +194,10 @@ router.get('/distribution-reservations', (req, res) => {
     res.json(results);
   });
 });
-
 // 8. Afficher le taux de remplissage des salles par spectacle
-router.get('/taux-remplissage', (req, res) => {
+router.get('/taux-remplissage/:spectacleId', (req, res) => {
+  const spectacleId = req.params.spectacleId;
+
   const sql = `
     SELECT Spectacle.title, Room.name AS room_name, 
     (SUM(Schedule.booked) / Room.gauge) * 100 AS fill_rate
@@ -205,11 +205,12 @@ router.get('/taux-remplissage', (req, res) => {
     JOIN Representation ON Schedule.date = Representation.first_date
     JOIN Spectacle ON Representation.spectacle_id = Spectacle.id
     JOIN Room ON Representation.room_id = Room.id
+    WHERE Spectacle.id = ?
     GROUP BY Spectacle.title, Room.name
     ORDER BY fill_rate DESC;
   `;
 
-  db.query(sql, (err, results) => {
+  db.query(sql, [spectacleId], (err, results) => {
     if (err) {
       console.error("Erreur lors de la récupération du taux de remplissage :", err);
       return res.status(500).json({
@@ -217,6 +218,14 @@ router.get('/taux-remplissage', (req, res) => {
         error: err.message
       });
     }
+
+    // Vérification 
+    if (results.length === 0) {
+      return res.status(404).json({
+        message: "Aucune donnée trouvée pour ce spectacle."
+      });
+    }
+
     res.json(results);
   });
 });
@@ -276,14 +285,14 @@ router.get('/metteurs-en-scene/:theatre_id', (req, res) => {
 // 11. Afficher les trois catégories de spectacles pour lesquelles le plus de places ont été réservées
 router.get('/categories-places-reservees', (req, res) => {
   const sql = `
-    SELECT Category.name AS category_name, SUM(Schedule.booked) AS total_reserved
-    FROM Schedule
-    JOIN Representation ON Schedule.date = Representation.first_date
-    JOIN Spectacle ON Representation.spectacle_id = Spectacle.id
-    JOIN Category ON Spectacle.id = Category.id
-    GROUP BY Category.name
-    ORDER BY total_reserved DESC
-    LIMIT 3;
+  SELECT Category.name AS category_name, COALESCE(SUM(Schedule.booked), 0) AS total_reserved
+  FROM Category
+  LEFT JOIN Spectacle ON Category.id = Spectacle.category_id
+  LEFT JOIN Representation ON Spectacle.id = Representation.spectacle_id
+  LEFT JOIN Schedule ON Representation.first_date = Schedule.date
+  GROUP BY Category.name
+  ORDER BY total_reserved DESC
+  LIMIT 3;
   `;
 
   db.query(sql, (err, results) => {

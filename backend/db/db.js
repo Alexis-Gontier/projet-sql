@@ -1,15 +1,15 @@
 import mysql from 'mysql';
 
-// Configuration de la base de données
+// config bdd
 const db = mysql.createConnection({
     host: "localhost",
-    port: 8889,
+    port: 3306,
     user: "root",
-    password: "root",
+    password: "",
     database: "theatre_db"
 });
 
-// Connexion à la base de données
+//  verifconnexion
 db.connect((err) => {
     if (err) {
         console.error("Erreur de connexion à la BDD :", err);
