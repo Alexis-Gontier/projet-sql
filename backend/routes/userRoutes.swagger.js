@@ -765,7 +765,6 @@
  *       Cet endpoint permet à un utilisateur de s'inscrire en fournissant un nom d'utilisateur, un mot de passe, une adresse e-mail,
  *       une date de naissance, un prénom et un nom de famille.
  *       Si la création réussit, l'ID de l'utilisateur nouvellement créé est retourné.
- *     tags: [Utilisateurs]
  *     requestBody:
  *       required: true
  *       content:
@@ -836,6 +835,60 @@
  *                   type: string
  *                   description: Message d'erreur général.
  *                   example: "Erreur de serveur lors de l'inscription"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
+
+/**
+ * @swagger
+ * /api/v1/associate-artist-spectacle:
+ *   post:
+ *     summary: Associe un artiste à un spectacle.
+ *     description: Cet endpoint permet d'associer un artiste à un spectacle en spécifiant leurs identifiants.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               artist_id:
+ *                 type: integer
+ *                 description: Identifiant de l'artiste.
+ *                 example: 1
+ *               spectacle_id:
+ *                 type: integer
+ *                 description: Identifiant du spectacle.
+ *                 example: 5
+ *     responses:
+ *       201:
+ *         description: Artiste associé avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Artiste associé avec succès"
+ *                 roleId:
+ *                   type: integer
+ *                   description: Identifiant unique du rôle créé.
+ *                   example: 42
+ *       500:
+ *         description: Erreur serveur lors de l'association de l'artiste.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de l'association"
  *                 error:
  *                   type: string
  *                   description: Détails techniques de l'erreur.
