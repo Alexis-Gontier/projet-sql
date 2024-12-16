@@ -16,3 +16,6 @@ npm run frontend
 npm run backend
 ```
 `http://localhost:3000/`
+
+Pour tester les routes avec SwaggerUI :
+http://localhost:3000/api-docs/
