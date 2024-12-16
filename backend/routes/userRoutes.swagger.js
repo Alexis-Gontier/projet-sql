@@ -580,3 +580,84 @@
  *                   description: Détail de l'erreur
  *                   example: "ER_BAD_FIELD_ERROR: Champ inconnu dans la requête"
  */
+
+/**
+ * @swagger
+ *  /api/v1/artistes-fonctions:
+ *   get:
+ *     summary: Récupère les artistes ayant tenu au moins trois fonctions différentes.
+ *     description: Cette route retourne la liste des artistes qui ont occupé au moins trois fonctions différentes dans le système.
+ *     tags: [Problème à régler]
+ *     responses:
+ *       200:
+ *         description: Liste des artistes ayant au moins trois fonctions différentes.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   firstName:
+ *                     type: string
+ *                     example: "John"
+ *                   lastName:
+ *                     type: string
+ *                     example: "Doe"
+ *       500:
+ *         description: Erreur serveur lors de la récupération des données.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Erreur de serveur lors de la récupération des données"
+ *                 error:
+ *                   type: string
+ *                   example: "Détails de l'erreur serveur"
+*/
+
+/**
+ * @swagger
+ * paths:
+ *   /api/v1/revenues-by-spectacle:
+ *     get:
+ *       summary: "Afficher les recettes par spectacle"
+ *       description: |
+ *         Cet endpoint récupère la liste des recettes totales par spectacle, triées par ordre décroissant.
+ *       responses:
+ *         '200':
+ *           description: "Liste des recettes par spectacle."
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     Spectacle_Title:
+ *                       type: string
+ *                       description: "Titre du spectacle"
+ *                       example: "Le Grand Spectacle"
+ *                     Total_Revenue:
+ *                       type: number
+ *                       description: "Recette totale du spectacle"
+ *                       example: 12000.50
+ *         '500':
+ *           description: "Erreur lors de la récupération des données."
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     description: "Message d'erreur général"
+ *                     example: "Erreur de serveur lors de la récupération des données"
+ *                   error:
+ *                     type: string
+ *                     description: "Détails techniques de l'erreur"
+ *                     example: "Détail de l'erreur."
+ */
