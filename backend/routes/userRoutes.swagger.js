@@ -901,7 +901,6 @@
  *   post:
  *     summary: Crée un nouveau spectacle.
  *     description: Cet endpoint permet de créer un nouveau spectacle en fournissant les informations nécessaires, telles que le titre, le synopsis, la durée, le prix, la langue et la catégorie.
- *     tags: [Spectacles]
  *     requestBody:
  *       required: true
  *       content:
@@ -974,6 +973,144 @@
  *                   type: string
  *                   description: Message d'erreur général.
  *                   example: "Erreur de serveur lors de la création"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
+
+/**
+ * @swagger
+ * /api/v1/reserve-seat:
+ *   post:
+ *     summary: Effectue une réservation pour un spectacle.
+ *     description: Cet endpoint permet à un utilisateur de réserver un siège pour une session spécifique d'un spectacle.
+ *     tags: [Problème bdd]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               schedule_id:
+ *                 type: integer
+ *                 description: Identifiant de l'horaire du spectacle.
+ *                 example: 10
+ *               user_id:
+ *                 type: integer
+ *                 description: Identifiant de l'utilisateur effectuant la réservation.
+ *                 example: 5
+ *               booked:
+ *                 type: boolean
+ *                 description: Statut de réservation (true pour réservé, false sinon).
+ *                 example: true
+ *     responses:
+ *       201:
+ *         description: Réservation effectuée avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Réservation effectuée avec succès"
+ *                 reservationId:
+ *                   type: integer
+ *                   description: Identifiant unique de la réservation nouvellement créée.
+ *                   example: 42
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur pour des données invalides.
+ *                   example: "Les données fournies ne sont pas valides."
+ *       500:
+ *         description: Erreur serveur lors de la réservation.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de la réservation"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
+
+/** PUT */
+
+/**
+ * @swagger
+ * /api/v1/update-password/{user_id}:
+ *   put:
+ *     summary: Met à jour le mot de passe d'un utilisateur.
+ *     description: Cet endpoint permet de modifier le mot de passe d'un utilisateur en fournissant son identifiant et un nouveau mot de passe.
+ *     tags: [Utilisateurs]
+ *     parameters:
+ *       - name: user_id
+ *         in: path
+ *         required: true
+ *         description: Identifiant de l'utilisateur dont le mot de passe doit être modifié.
+ *         schema:
+ *           type: integer
+ *           example: 5
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               new_password:
+ *                 type: string
+ *                 description: Nouveau mot de passe à définir pour l'utilisateur.
+ *                 example: "NouveauMotDePasse123!"
+ *     responses:
+ *       200:
+ *         description: Mot de passe mis à jour avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Mot de passe mis à jour avec succès"
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur pour des données invalides.
+ *                   example: "Les données fournies ne sont pas valides."
+ *       500:
+ *         description: Erreur serveur lors de la mise à jour du mot de passe.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de la mise à jour"
  *                 error:
  *                   type: string
  *                   description: Détails techniques de l'erreur.

@@ -569,7 +569,7 @@ router.put('/update-password/:user_id', (req, res) => {
   const userId = req.params.user_id;
   const { new_password } = req.body;
   const sql = `
-    UPDATE User SET password = ? WHERE id = ?;
+    UPDATE subscriber SET password = ? WHERE id = ?;
   `;
 
   db.query(sql, [new_password, userId], (err, results) => {
