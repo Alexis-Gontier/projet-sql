@@ -520,15 +520,15 @@ router.post('/associate-artist-spectacle', (req, res) => {
     res.status(201).json({ message: "Artiste associé avec succès", roleId: results.insertId });
   });
 });
-
 // 3. Créer un spectacle
 router.post('/create-spectacle', (req, res) => {
-  const { title, description, category_id } = req.body;
+  const { title, synopsis, duration, price, language, category_id } = req.body;
   const sql = `
-    INSERT INTO Spectacle (title, description, category_id) VALUES (?, ?, ?);
+    INSERT INTO Spectacle (title, synopsis, duration, price, language, category_id) 
+    VALUES (?, ?, ?, ?, ?, ?);
   `;
 
-  db.query(sql, [title, description, category_id], (err, results) => {
+  db.query(sql, [title, synopsis, duration, price, language, category_id], (err, results) => {
     if (err) {
       console.error("Erreur lors de la création du spectacle :", err);
       return res.status(500).json({
@@ -539,6 +539,7 @@ router.post('/create-spectacle', (req, res) => {
     res.status(201).json({ message: "Spectacle créé avec succès", spectacleId: results.insertId });
   });
 });
+
 
 // 4. Effectuer une réservation pour un spectacle donné
 router.post('/reserve-seat', (req, res) => {

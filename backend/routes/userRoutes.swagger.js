@@ -894,3 +894,88 @@
  *                   description: Détails techniques de l'erreur.
  *                   example: "Détail de l'erreur."
  */
+
+/**
+ * @swagger
+ * /api/v1/create-spectacle:
+ *   post:
+ *     summary: Crée un nouveau spectacle.
+ *     description: Cet endpoint permet de créer un nouveau spectacle en fournissant les informations nécessaires, telles que le titre, le synopsis, la durée, le prix, la langue et la catégorie.
+ *     tags: [Spectacles]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Titre du spectacle.
+ *                 example: "Le Combat"
+ *               synopsis:
+ *                 type: string
+ *                 description: Résumé ou description du spectacle.
+ *                 example: "Un développeur se bat pour rendre le projet le plus complet possible"
+ *               duration:
+ *                 type: string
+ *                 format: time
+ *                 description: Durée du spectacle au format HH:mm:ss.
+ *                 example: "99:99:99"
+ *               price:
+ *                 type: number
+ *                 format: float
+ *                 description: Prix du billet pour le spectacle.
+ *                 example: 20
+ *               language:
+ *                 type: string
+ *                 enum: ['français', 'VO', 'surtitré', 'audio']
+ *                 description: Langue du spectacle.
+ *                 example: "français"
+ *               category_id:
+ *                 type: integer
+ *                 description: Identifiant de la catégorie à laquelle appartient le spectacle.
+ *                 example: 2
+ *     responses:
+ *       201:
+ *         description: Spectacle créé avec succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message de confirmation.
+ *                   example: "Spectacle créé avec succès"
+ *                 spectacleId:
+ *                   type: integer
+ *                   description: Identifiant unique du spectacle nouvellement créé.
+ *                   example: 42
+ *       400:
+ *         description: Données de requête invalides.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur indiquant les problèmes dans les données fournies.
+ *                   example: "Les données fournies ne sont pas valides."
+ *       500:
+ *         description: Erreur serveur lors de la création du spectacle.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Message d'erreur général.
+ *                   example: "Erreur de serveur lors de la création"
+ *                 error:
+ *                   type: string
+ *                   description: Détails techniques de l'erreur.
+ *                   example: "Détail de l'erreur."
+ */
